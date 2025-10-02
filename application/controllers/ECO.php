@@ -31,7 +31,7 @@ class ECO extends CI_Controller
     {
         // Konfigurasi upload
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'pdf|docx|jpg|png|xlsx';
+        $config['allowed_types'] = 'html|pptx|xlsx';
         $config['max_size']      = 4096; // 2MB
 
         if (!is_dir($config['upload_path'])) {
@@ -56,21 +56,21 @@ class ECO extends CI_Controller
 
         // Ambil input dari form
         $data = [
-            'dept'             => $this->input->post('dept'),
-            'register'     => $this->input->post('regis_id'),
-            'model_pn' => $this->input->post('model_pn'),
-            'pn_name'          => $this->input->post('pn_name'),
-            'in_eco_num'          => $this->input->post('in_eco_num'),
+            'dept'            => $this->input->post('dept'),
+            'register'        => $this->input->post('regis_id'),
+            'model_pn'        => $this->input->post('model_pn'),
+            'pn_name'         => $this->input->post('pn_name'),
+            'in_eco_num'      => $this->input->post('in_eco_num'),
             'in_eco_path'     => $file1,
-            'kr_eco_num'          => $this->input->post('kr_eco_num'),
+            'kr_eco_num'      => $this->input->post('kr_eco_num'),
             'kr_eco_path'     => $file2,
-            'last_stock'          => $this->input->post('cr_stock'),
-            'effec_date'          => $this->input->post('efect_date'),
-            'expec-date'          => $this->input->post('expec-date'),
-            'h_apply'          => $this->input->post('h-apply'),
+            'last_stock'      => $this->input->post('cr_stock'),
+            'effec_date'      => $this->input->post('efect_date'),
+            'expec-date'      => $this->input->post('expec-date'),
+            'h_apply'         => $this->input->post('h-apply'),
             'dwg_pn'          => $this->input->post('dwg_pn'),
-            'rm'          => $this->input->post('rm'),
-            'ket'          => $this->input->post('ket')
+            'rm'              => $this->input->post('rm'),
+            'ket'             => $this->input->post('ket')
         ];
 
         $this->Eco_model->insert($data);

@@ -58,7 +58,7 @@
                                 (empty($data->in_eco_num) && empty($data->in_eco_path)) ? 'red' : ((empty($data->in_eco_num) || empty($data->in_eco_path)) ? 'yellow' : 'transparent')
                                 ?>">
                                 <?= !empty($data->in_eco_path)
-                                    ? '<a href="' . base_url('uploads/eco_file/' . $data->in_eco_path) . '" target="_blank">' . ($data->in_eco_num ?: "—") . '</a>'
+                                    ? '<a href="' . site_url('uploads/eco_file/' . rawurlencode($data->in_eco_path)) . '" target="_blank">' . ($data->in_eco_num ?: "—") . '</a>'
                                     : ($data->in_eco_num ?: "—")
                                 ?>
                             </td>
@@ -67,7 +67,7 @@
                                 (empty($data->kr_eco_num) && empty($data->kr_eco_path)) ? 'red' : ((empty($data->kr_eco_num) || empty($data->kr_eco_path)) ? 'yellow' : 'transparent')
                                 ?>">
                                 <?= !empty($data->kr_eco_path)
-                                    ? '<a href="' . base_url('uploads/eco_file/' . $data->kr_eco_path) . '" target="_blank">' . ($data->kr_eco_num ?: "—") . '</a>'
+                                    ? '<a href="' . site_url('uploads/eco_file/' . rawurlencode($data->kr_eco_path)) . '" target="_blank">' . ($data->kr_eco_num ?: "—") . '</a>'
                                     : ($data->kr_eco_num ?: "—")
                                 ?>
                             </td>
