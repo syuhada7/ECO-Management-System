@@ -111,6 +111,11 @@
                 <i class="fa fa-list"></i> <span>ECO Status Report</span>
               </a>
             </li>
+            <li <?= $this->uri->segment(1) == '' ? 'class="active"' : '' ?>>
+              <a href="<?= base_url('eco/meeting') ?>">
+                <i class="fa fa-table"></i> <span>ECO Meeting Report</span>
+              </a>
+            </li>
             <!-- <li class="treeview menu-open">
               <a href="">
                 <i class="fa fa-cubes"></i> <span>Item Management</span>

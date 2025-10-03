@@ -24,7 +24,7 @@
                     <th>No</th>
                     <th>Departement</th>
                     <th>Registrations Date</th>
-                    <th>Status</th>
+                    <th>Meeting Report</th>
                     <th>Model</th>
                     <th>P/N Name</th>
                     <th>IN ECO</th>
@@ -48,7 +48,7 @@
                             <td><?= $no++; ?></td>
                             <td><?= $data->dept ?></td>
                             <td><?= $data->regis_date ?></td>
-                            <td><a href=""><?= $data->status1 ?></a></td>
+                            <td><a href="<?= site_url('eco/meeting') ?>"><?= $data->status1 ?></a></td>
                             <td><?= $data->model_pn ?></td>
                             <td style="background-color: <?= empty($data->pn_name) ? 'red' : '' ?>">
                                 <?= !empty($data->pn_name) ? $data->pn_name : '' ?>

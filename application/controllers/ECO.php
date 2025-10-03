@@ -10,7 +10,7 @@ class ECO extends CI_Controller
         // check_admin();
         $this->load->model('Eco_model');
         $this->load->library('form_validation', 'upload');
-        $this->load->model(['User_model']);
+        $this->load->model(['User_model', 'Delivery_model']);
     }
 
     public function index()
@@ -24,7 +24,24 @@ class ECO extends CI_Controller
     }
     public function v_list()
     {
-        $this->template->load('templates/template', 'eco/v_list');
+        // Simulasi data material (nanti bisa dari DB juga)
+        $materials = [
+            ['material_no' => 'MCK12345601', 'stock' => 2000, 'effective_date' => '25.10.01', 'exhaust_date' => '25.09.01', 'shipping' => 'possible'],
+            ['material_no' => 'MCK98765432', 'stock' => 3000, 'effective_date' => '25.11.15', 'exhaust_date' => '25.10.20', 'shipping' => 'possible'],
+        ];
+
+        $data['materials'] = $materials;
+        $this->load->view('eco/v_list', $data);
+        // $this->template->load('templates/template', 'eco/v_list', $data);
+    }
+    public function meeting()
+    {
+        $this->template->load('templates/template', 'eco/meeting_report');
+    }
+    public function status_report()
+    {
+        $data['row'] = $this->Eco_model->get();
+        $this->template->load('templates/template', 'eco/status_report', $data);
     }
 
     public function save()
@@ -76,9 +93,10 @@ class ECO extends CI_Controller
         $this->Eco_model->insert($data);
         redirect('ECO');
     }
-    public function status_report()
+    // Ajax ambil data delivery schedule dari DB
+    public function get_delivery($material_no)
     {
-        $data['row'] = $this->Eco_model->get();
-        $this->template->load('templates/template', 'eco/status_report', $data);
+        $data = $this->Delivery_model->get_by_material($material_no);
+        echo json_encode($data);
     }
 }
