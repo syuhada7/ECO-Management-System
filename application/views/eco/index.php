@@ -83,7 +83,7 @@
                             <td><?= $data->status2 ?></td>
                             <td><a href=""><?= $data->fisrt_stcok ?></td>
                             <td><a href=""><?= $data->dwg_pn ?></td>
-                            <td><a href=""><?= $data->rm ?></td>
+                            <td><?= $data->rm ?></td>
                             <td><a href=""><?= $data->last_stock ?></td>
                             <td><a href="<?= site_url('eco/v_list') ?>"><i class="fa fa-eye"></i></a></td>
                         </tr>

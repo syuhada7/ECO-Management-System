@@ -28,7 +28,7 @@ class User extends CI_Controller
         $this->form_validation->set_rules('level', 'Level', 'trim|required');
 
         if ($this->form_validation->run() == false) {
-            $this->template->load('templates/template', 'User');
+            redirect('User');
         } else {
             $post = $this->input->post(null, TRUE);
             $this->User_model->add($post);
