@@ -18,6 +18,7 @@
                     </div>
                 </div>
             </form>
+            <a href="<?= site_url('ECO_Public') ?>" class="btn btn-sm btn-success"><i class="fa fa-eye"></i> View</a>
         </div>
         <!-- /.login-box-body -->
     </div>

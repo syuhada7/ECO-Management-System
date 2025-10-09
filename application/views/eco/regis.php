@@ -69,7 +69,7 @@
                         </div>
                         <div class="col-lg-4">
                             <label>Expected exhaustion date</label>
-                            <input type="date" name="expec-date" value="" class="form-control">
+                            <input type="date" name="expec_date" value="" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
@@ -80,6 +80,9 @@
                         <div class="col-lg-4">
                             <label>Drawing P/N</label>
                             <input type="text" name="dwg_pn" class="form-control">
+                            <br>
+                            <input type="file" name="attachment3" required>
+                            <br>
                         </div>
                         <div class="col-lg-4">
                             <label>Related Materials</label>

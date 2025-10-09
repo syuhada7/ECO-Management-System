@@ -22,21 +22,47 @@ class ECO extends CI_Controller
     {
         $this->template->load('templates/template', 'eco/regis');
     }
-    public function v_list()
+    public function delivery($id = null, $rm = null)
     {
-        // Simulasi data material (nanti bisa dari DB juga)
-        $materials = [
-            ['material_no' => 'MCK12345601', 'stock' => 2000, 'effective_date' => '25.10.01', 'exhaust_date' => '25.09.01', 'shipping' => 'possible'],
-            ['material_no' => 'MCK98765432', 'stock' => 3000, 'effective_date' => '25.11.15', 'exhaust_date' => '25.10.20', 'shipping' => 'possible'],
-        ];
+        if (!$id || !$rm) {
+            echo json_encode(['error' => 'Parameter tidak lengkap']);
+            return;
+        }
 
-        $data['materials'] = $materials;
-        $this->load->view('eco/v_list', $data);
-        // $this->template->load('templates/template', 'eco/v_list', $data);
+        // Validasi material_id dan material_no cocok
+        $material = $this->Eco_model->get_rm($id, $rm);
+        if (!$material) {
+            echo json_encode(['error' => 'Material tidak ditemukan']);
+            return;
+        }
+        $data['row'] = $this->Delivery_model->get_rm($id, $rm);
+        $this->template->load('templates/template', 'eco/delivery', $data);
     }
-    public function meeting()
+
+    // Halaman detail berdasarkan ID & Material
+    public function v_list($id = null, $rm = null)
     {
-        $this->template->load('templates/template', 'eco/meeting_report');
+        if (!$id || !$rm) {
+            echo json_encode(['error' => 'Parameter tidak lengkap']);
+            return;
+        }
+
+        // Validasi material_id dan material_no cocok
+        $material = $this->Eco_model->get_rm($id, $rm);
+        if (!$material) {
+            echo json_encode(['error' => 'Material tidak ditemukan']);
+            return;
+        }
+
+        $data['row'] = $this->Eco_model->get_rm($id, $rm);
+        $data['row2'] = $this->Delivery_model->get_rm($id, $rm);
+        $data['materials'] = $this->Delivery_model->get_all_materials();
+        $this->template->load('templates/template', 'eco/v_list', $data);
+    }
+    public function meeting($id)
+    {
+        $data['row'] = $this->Eco_model->get($id);
+        $this->template->load('templates/template', 'eco/meeting_report', $data);
     }
     public function status_report()
     {
@@ -48,7 +74,7 @@ class ECO extends CI_Controller
     {
         // Konfigurasi upload
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'html|pptx|xlsx';
+        $config['allowed_types'] = 'html|pptx|xlsx|pdf';
         $config['max_size']      = 4096; // 2MB
 
         if (!is_dir($config['upload_path'])) {
@@ -71,6 +97,14 @@ class ECO extends CI_Controller
             $file2 = $file2_data['file_name'];
         }
 
+        // Upload file 3
+        $this->upload->initialize($config);
+        $file2 = "";
+        if ($this->upload->do_upload('attachment3')) {
+            $file2_data = $this->upload->data();
+            $file2 = $file2_data['file_name'];
+        }
+
         // Ambil input dari form
         $data = [
             'dept'            => $this->input->post('dept'),
@@ -83,7 +117,7 @@ class ECO extends CI_Controller
             'kr_eco_path'     => $file2,
             'last_stock'      => $this->input->post('cr_stock'),
             'effec_date'      => $this->input->post('efect_date'),
-            'expec-date'      => $this->input->post('expec-date'),
+            'expec_date'      => $this->input->post('expec_date'),
             'h_apply'         => $this->input->post('h-apply'),
             'dwg_pn'          => $this->input->post('dwg_pn'),
             'rm'              => $this->input->post('rm'),
@@ -93,9 +127,49 @@ class ECO extends CI_Controller
         $this->Eco_model->insert($data);
         redirect('ECO');
     }
-    // Ajax ambil data delivery schedule dari DB
-    public function get_delivery($material_no)
+    public function save_delivery()
     {
+        // proses simpan ke database
+        $id = $this->input->post('id_eco');
+        $rm = $this->input->post('material_no');
+        $qty_shipped = $this->input->post('quantity_shipped');
+        $current_stock = $this->input->post('previous_inventory');
+        $last_stock = $current_stock - $qty_shipped;
+
+        // contoh insert
+        $data = [
+            'id_eco' => $this->input->post('id_eco'),
+            'regis' => $this->input->post('regis_id'),
+            'dept' => $this->input->post('dept'),
+            'delivery_schedule' => $this->input->post('delivery_date'),
+            'material_no' => $this->input->post('material_no'),
+            'shipped_wio' => $this->input->post('shipped_wio'),
+            'previous_inventory' => $current_stock,
+            'quantity_shipped' => $qty_shipped,
+            'current_stock' => $last_stock,
+            'note' => $this->input->post('note')
+        ];
+        $this->Delivery_model->insert($data);
+        $this->Eco_model->update_delivery();
+        $this->Delivery_model->update_delivery();
+        redirect('eco/v_list/' . $id . '/' . $rm);
+    }
+
+    // Ajax ambil data delivery schedule dari DB
+    public function get_delivery($id = null, $material_no = null)
+    {
+        if (!$id || !$material_no) {
+            echo json_encode(['error' => 'Parameter tidak lengkap']);
+            return;
+        }
+
+        // Validasi material_id dan material_no cocok
+        $material = $this->Delivery_model->get_rm($id, $material_no);
+        if (!$material) {
+            echo json_encode(['error' => 'Material tidak ditemukan']);
+            return;
+        }
+
         $data = $this->Delivery_model->get_by_material($material_no);
         echo json_encode($data);
     }

@@ -29,6 +29,7 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
@@ -109,11 +110,6 @@
             <li <?= $this->uri->segment(1) == '' ? 'class="active"' : '' ?>>
               <a href="<?= base_url('eco/status_report') ?>">
                 <i class="fa fa-list"></i> <span>ECO Status Report</span>
-              </a>
-            </li>
-            <li <?= $this->uri->segment(1) == '' ? 'class="active"' : '' ?>>
-              <a href="<?= base_url('eco/meeting') ?>">
-                <i class="fa fa-table"></i> <span>ECO Meeting Report</span>
               </a>
             </li>
             <!-- <li class="treeview menu-open">

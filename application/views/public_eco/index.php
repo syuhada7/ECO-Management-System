@@ -2,7 +2,7 @@
 <section class="content-header">
     <h1><i class="fa fa-cubes"></i> ECO Data List</h1>
     <ol class="breadcrumb">
-        <li><a href="<?= base_url('dashboard'); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="<?= base_url('eco_public'); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">ECO Data List</li>
     </ol>
 </section>
@@ -13,9 +13,7 @@
             <i class="fa fa-cubes"></i>
             <h3 class="box-title">List Data ECO</h3>
             <div class="pull-right">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-flat"><a href="<?= site_url('eco/regis') ?>"><i class="fa fa-plus"> Created</i></a></button>
-                </div>
+
             </div>
         </div>
         <div class="box-body table-responsive">
@@ -48,7 +46,7 @@
                             <td><?= $no++; ?></td>
                             <td><?= $data->dept ?></td>
                             <td><?= $data->regis_date ?></td>
-                            <td><a href="<?= site_url('eco/meeting/' . $data->id_eco) ?>"><?= $data->status1 ?></a></td>
+                            <td><a href="<?= site_url('eco_public/meeting/' . $data->id_eco) ?>"><?= $data->status1 ?></a></td>
                             <td><?= $data->model_pn ?></td>
                             <td style="background-color: <?= empty($data->pn_name) ? 'red' : '' ?>">
                                 <?= !empty($data->pn_name) ? $data->pn_name : '' ?>
@@ -83,9 +81,9 @@
                             <td><?= $data->status2 ?></td>
                             <td><a href=""><?= $data->fisrt_stcok ?></td>
                             <td><a href="<?= site_url('uploads/eco_file/' . rawurlencode($data->dwg_path)) ?>" target="_blank"><?= $data->dwg_pn ?></td>
-                            <td><a href="<?= site_url('eco/v_list/' . $data->id_eco . '/' . $data->rm); ?>"><?= $data->rm ?></td>
+                            <td><a href="<?= site_url('eco_public/v_list/' . $data->id_eco . '/' . $data->rm); ?>"><?= $data->rm ?></td>
                             <td><?= $data->last_stock ?></td>
-                            <td><a href="<?= site_url('eco/approval/' . $data->id_eco) ?>"><i class="fa fa-eye"></i></a></td>
+                            <td><a href="<?= site_url('eco_public/approval/' . $data->id_eco) ?>"><i class="fa fa-eye"></i></a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

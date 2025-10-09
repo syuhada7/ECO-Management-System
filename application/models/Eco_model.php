@@ -14,9 +14,31 @@ class Eco_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-
+    public function get_rm($id, $rm)
+    {
+        $this->db->from('eco');
+        $this->db->where('id_eco', $id);
+        $this->db->where('rm', $rm);
+        $query = $this->db->get();
+        return $query;
+    }
     public function insert($data)
     {
         return $this->db->insert($this->table, $data);
+    }
+
+    public function update_delivery()
+    {
+        $id = $this->input->post('id_eco');
+        $rm = $this->input->post('material_no');
+        $data = [
+            'last_stock'        =>  $this->input->post('current_stock'),
+            'last_stock_date'   => date('Y-m-d H:i:s')
+        ];
+
+        // Query update
+        $this->db->where('id_eco', $id);
+        $this->db->where('rm', $rm);
+        $this->db->update('eco', $data);
     }
 }

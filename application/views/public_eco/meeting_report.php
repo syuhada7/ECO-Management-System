@@ -2,7 +2,7 @@
 <section class="content-header">
     <h1><i class="fa fa-list"></i> ECO Meeting Report</h1>
     <ol class="breadcrumb">
-        <li><a href="<?= base_url('dashboard'); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="<?= base_url('eco_public'); ?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">ECO Meeting Report</li>
     </ol>
 </section>
