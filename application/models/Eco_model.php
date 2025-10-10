@@ -27,6 +27,14 @@ class Eco_model extends CI_Model
         return $this->db->insert($this->table, $data);
     }
 
+    public function update_meeting($data)
+    {
+        $id = $this->input->post('id_eco');
+        // Query update
+        $this->db->where('id_eco', $id);
+        $this->db->update('eco', $data);
+    }
+
     public function update_delivery()
     {
         $id = $this->input->post('id_eco');

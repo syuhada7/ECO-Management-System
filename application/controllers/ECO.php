@@ -111,6 +111,7 @@ class ECO extends CI_Controller
             'register'        => $this->input->post('regis_id'),
             'model_pn'        => $this->input->post('model_pn'),
             'pn_name'         => $this->input->post('pn_name'),
+            'status1'         => "In Progress",
             'in_eco_num'      => $this->input->post('in_eco_num'),
             'in_eco_path'     => $file1,
             'kr_eco_num'      => $this->input->post('kr_eco_num'),
@@ -127,6 +128,7 @@ class ECO extends CI_Controller
         $this->Eco_model->insert($data);
         redirect('ECO');
     }
+
     public function save_delivery()
     {
         // proses simpan ke database
@@ -153,6 +155,32 @@ class ECO extends CI_Controller
         $this->Eco_model->update_delivery();
         $this->Delivery_model->update_delivery();
         redirect('eco/v_list/' . $id . '/' . $rm);
+    }
+
+    public function upload_meeting()
+    {
+        $id = $this->input->post('id_eco');
+        // Konfigurasi upload
+        $config['upload_path']   = './uploads/eco_file/';
+        $config['allowed_types'] = 'jpg|jpeg|png';
+        $config['max_size']      = 4096; // 2MB
+
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, true);
+        }
+        // Upload file 1
+        $this->upload->initialize($config);
+        $file1 = "";
+        if ($this->upload->do_upload('attachment1')) {
+            $file1_data = $this->upload->data();
+            $file1 = $file1_data['file_name'];
+        }
+        // Ambil input dari form
+        $data = [
+            'img_meeting'   => $file1
+        ];
+        $this->Eco_model->update_meeting($data);
+        redirect('eco/meeting/' . $id);
     }
 
     // Ajax ambil data delivery schedule dari DB
