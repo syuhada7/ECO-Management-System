@@ -47,6 +47,16 @@ class ECO_Public extends CI_Controller
         $data['row'] = $this->Eco_model->get($id);
         $this->template->load('templates/template_public', 'public_eco/meeting_report', $data);
     }
+    public function inspection($id)
+    {
+        $data['row'] = $this->Eco_model->get($id);
+        $this->template->load('templates/template_public', 'public_eco/inspection', $data);
+    }
+    public function approval($id)
+    {
+        $data['row'] = $this->Eco_model->get($id);
+        $this->template->load('templates/template_public', 'public_eco/approval', $data);
+    }
     public function status_report()
     {
         $data['row'] = $this->Eco_model->get();

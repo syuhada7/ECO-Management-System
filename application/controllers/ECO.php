@@ -20,7 +20,8 @@ class ECO extends CI_Controller
     }
     public function regis()
     {
-        $this->template->load('templates/template', 'eco/regis');
+        $data['next_id'] = $this->Eco_model->get_next_id();
+        $this->template->load('templates/template', 'eco/regis', $data);
     }
     public function delivery($id = null, $rm = null)
     {
@@ -64,6 +65,16 @@ class ECO extends CI_Controller
         $data['row'] = $this->Eco_model->get($id);
         $this->template->load('templates/template', 'eco/meeting_report', $data);
     }
+    public function approval($id)
+    {
+        $data['row'] = $this->Eco_model->get($id);
+        $this->template->load('templates/template', 'eco/approval', $data);
+    }
+    public function inspection($id)
+    {
+        $data['row'] = $this->Eco_model->get($id);
+        $this->template->load('templates/template', 'eco/inspection', $data);
+    }
     public function status_report()
     {
         $data['row'] = $this->Eco_model->get();
@@ -75,7 +86,7 @@ class ECO extends CI_Controller
         // Konfigurasi upload
         $config['upload_path']   = './uploads/eco_file/';
         $config['allowed_types'] = 'html|pptx|xlsx|pdf';
-        $config['max_size']      = 4096; // 2MB
+        $config['max_size']      = 30720; // 15MB
 
         if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, true);
@@ -99,10 +110,10 @@ class ECO extends CI_Controller
 
         // Upload file 3
         $this->upload->initialize($config);
-        $file2 = "";
+        $file3 = "";
         if ($this->upload->do_upload('attachment3')) {
-            $file2_data = $this->upload->data();
-            $file2 = $file2_data['file_name'];
+            $file3_data = $this->upload->data();
+            $file3 = $file3_data['file_name'];
         }
 
         // Ambil input dari form
@@ -112,6 +123,7 @@ class ECO extends CI_Controller
             'model_pn'        => $this->input->post('model_pn'),
             'pn_name'         => $this->input->post('pn_name'),
             'status1'         => "In Progress",
+            'status2'         => "In Progress",
             'in_eco_num'      => $this->input->post('in_eco_num'),
             'in_eco_path'     => $file1,
             'kr_eco_num'      => $this->input->post('kr_eco_num'),
@@ -121,11 +133,24 @@ class ECO extends CI_Controller
             'expec_date'      => $this->input->post('expec_date'),
             'h_apply'         => $this->input->post('h-apply'),
             'dwg_pn'          => $this->input->post('dwg_pn'),
+            'dwg_path'        => $file3,
             'rm'              => $this->input->post('rm'),
+            'last_stock_date' => $this->input->post('regis_date'),
             'ket'             => $this->input->post('ket')
         ];
 
+        // update table materials
+        $data2 = [
+            'id_eco'                => $this->input->post('id_eco'),
+            'current_stock'         => $this->input->post('cr_stock'),
+            'effective_date'        => $this->input->post('efect_date'),
+            'exhaust_date'          => $this->input->post('expec_date'),
+            'material_no'           => $this->input->post('rm'),
+            'shipping_available'    => "Possible"
+        ];
+
         $this->Eco_model->insert($data);
+        $this->db->insert('tabel_material', $data2);
         redirect('ECO');
     }
 
@@ -182,6 +207,81 @@ class ECO extends CI_Controller
         $this->Eco_model->update_meeting($data);
         redirect('eco/meeting/' . $id);
     }
+
+    public function upload_inspection()
+    {
+        $id = $this->input->post('id_eco');
+        // Konfigurasi upload
+        $config['upload_path']   = './uploads/eco_file/';
+        $config['allowed_types'] = 'jpg|jpeg|png';
+        $config['max_size']      = 4096; // 2MB
+
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, true);
+        }
+        // Upload file 1
+        $this->upload->initialize($config);
+        $file1 = "";
+        if ($this->upload->do_upload('attachment1')) {
+            $file1_data = $this->upload->data();
+            $file1 = $file1_data['file_name'];
+        }
+        // Ambil input dari form
+        $data = [
+            'img_qc'             => $file1,
+            'first_release_date' => $this->input->post('fr_date')
+        ];
+        $this->Eco_model->update_inspection($data);
+        redirect('eco/inspection/' . $id);
+    }
+
+    public function update_approval()
+    {
+        $id_eco   = $this->input->post('id_eco');
+        $col_name = $this->input->post('approval_column');
+        $value    = $this->input->post('approval_value');
+
+        if (!empty($id_eco) && !empty($col_name)) {
+            // 🔹 1. Update kolom approval yang sesuai
+            $this->db->where('id_eco', $id_eco);
+            $this->db->update('eco', [$col_name => $value]);
+
+            // 🔹 2. Ambil ulang data ECO untuk pengecekan status
+            $eco = $this->db->get_where('eco', ['id_eco' => $id_eco])->row();
+
+            if ($eco) {
+                // 🔹 3. Daftar semua kolom approval
+                $approvals = [
+                    $eco->aproval1,
+                    $eco->aproval2,
+                    $eco->aproval3,
+                    $eco->aproval4,
+                    $eco->aproval5,
+                    $eco->aproval6,
+                    $eco->aproval7
+                ];
+
+                // 🔹 4. Cek apakah semua sudah diisi
+                $incomplete = in_array(null, $approvals, true) || in_array('', $approvals, true);
+
+                // 🔹 5. Jika semua sudah terisi → update status jadi "Complete"
+                if (!$incomplete) {
+                    $this->db->where('id_eco', $id_eco);
+                    $this->db->update('eco', ['status1' => 'Complete', 'status2' => 'Complete']);
+                } else {
+                    $this->db->where('id_eco', $id_eco);
+                    $this->db->update('eco', ['status1' => 'In Progress', 'status2' => 'In Progress']);
+                }
+            }
+        } else {
+            $this->session->set_flashdata('error', 'Invalid data.');
+        }
+
+        // 🔹 6. Redirect kembali
+        redirect('eco');
+    }
+
+
 
     // Ajax ambil data delivery schedule dari DB
     public function get_delivery($id = null, $material_no = null)

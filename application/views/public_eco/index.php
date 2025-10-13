@@ -83,7 +83,28 @@
                             <td><a href="<?= site_url('uploads/eco_file/' . rawurlencode($data->dwg_path)) ?>" target="_blank"><?= $data->dwg_pn ?></td>
                             <td><a href="<?= site_url('eco_public/v_list/' . $data->id_eco . '/' . $data->rm); ?>"><?= $data->rm ?></td>
                             <td><?= $data->last_stock ?></td>
-                            <td><a href="<?= site_url('eco_public/approval/' . $data->id_eco) ?>"><i class="fa fa-eye"></i></a></td>
+                            <?php
+                            $approvals = [
+                                $data->aproval1,
+                                $data->aproval2,
+                                $data->aproval3,
+                                $data->aproval4,
+                                $data->aproval5,
+                                $data->aproval6,
+                                $data->aproval7
+                            ];
+
+                            // Jika ada salah satu yang kosong → beri warna merah
+                            $incomplete = in_array(null, $approvals, true) || in_array('', $approvals, true);
+
+                            // Buat URL link
+                            $link = site_url('eco_public/approval/' . $data->id_eco);
+                            ?>
+                            <td style="background-color: <?= $incomplete ? 'red' : '' ?>">
+                                <a href="<?= $link ?>">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

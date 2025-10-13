@@ -32,6 +32,7 @@
                         <div class="col-lg-4">
                             <label>Registrant</label>
                             <input type="text" name="regis_id" value="<?= $this->fungsi->user_login()->nama; ?>" class="form-control" readonly>
+                            <input type="hidden" name="id_eco" value="<?= $next_id ?>" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">

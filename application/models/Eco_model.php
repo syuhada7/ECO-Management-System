@@ -14,6 +14,13 @@ class Eco_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+    public function get_next_id()
+    {
+        $this->db->select_max('id_eco');
+        $query = $this->db->get('eco');
+        $result = $query->row();
+        return $result ? $result->id_eco + 1 : 1;
+    }
     public function get_rm($id, $rm)
     {
         $this->db->from('eco');
@@ -28,6 +35,14 @@ class Eco_model extends CI_Model
     }
 
     public function update_meeting($data)
+    {
+        $id = $this->input->post('id_eco');
+        // Query update
+        $this->db->where('id_eco', $id);
+        $this->db->update('eco', $data);
+    }
+
+    public function update_inspection($data)
     {
         $id = $this->input->post('id_eco');
         // Query update
