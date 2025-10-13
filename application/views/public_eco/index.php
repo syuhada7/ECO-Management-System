@@ -79,7 +79,7 @@
                             </td>
                             <td><?= $data->h_apply ?></td>
                             <td><?= $data->status2 ?></td>
-                            <td><a href=""><?= $data->fisrt_stcok ?></td>
+                            <td><a href="<?= site_url('eco_public/inspection/' . $data->id_eco) ?>"><?= $data->$data->first_release_date  ?></td>
                             <td><a href="<?= site_url('uploads/eco_file/' . rawurlencode($data->dwg_path)) ?>" target="_blank"><?= $data->dwg_pn ?></td>
                             <td><a href="<?= site_url('eco_public/v_list/' . $data->id_eco . '/' . $data->rm); ?>"><?= $data->rm ?></td>
                             <td><?= $data->last_stock ?></td>
