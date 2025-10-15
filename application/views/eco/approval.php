@@ -27,7 +27,7 @@
                 'PPIC'       => 'aproval4',
                 'Molding'    => 'aproval5',
                 'Injection'  => 'aproval6',
-                'Assy'       => 'aproval7'
+                'Assembly'   => 'aproval7'
             ];
             ?>
 

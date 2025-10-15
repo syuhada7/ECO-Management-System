@@ -31,6 +31,7 @@ class User_model extends CI_Model
         $params['level'] = $post['level'];
         $params['dept'] = $post['dept'];
         $params['image'] = 'default.png';
+        $params['is_active'] = 1;
         $this->db->insert('user', $params);
     }
 
