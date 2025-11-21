@@ -1,0 +1,234 @@
+-- phpMyAdmin SQL Dump
+-- version 4.9.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Nov 21, 2025 at 08:03 AM
+-- Server version: 10.4.8-MariaDB
+-- PHP Version: 7.3.11
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `db_rnd`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bom`
+--
+
+CREATE TABLE `bom` (
+  `id_bom` int(11) NOT NULL,
+  `part_no` varchar(150) NOT NULL,
+  `part_name` varchar(150) NOT NULL,
+  `sub_part` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `delivery_schedule`
+--
+
+CREATE TABLE `delivery_schedule` (
+  `id` int(11) NOT NULL,
+  `id_eco` int(11) NOT NULL,
+  `material_no` varchar(50) DEFAULT NULL,
+  `delivery_schedule` date DEFAULT NULL,
+  `previous_inventory` int(11) DEFAULT NULL,
+  `quantity_shipped` int(11) DEFAULT NULL,
+  `current_stock` int(11) DEFAULT NULL,
+  `shipped_wio` varchar(50) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  `regis` varchar(50) NOT NULL,
+  `dept` varchar(50) NOT NULL,
+  `regis_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eco`
+--
+
+CREATE TABLE `eco` (
+  `id_eco` int(11) NOT NULL,
+  `register` varchar(50) NOT NULL,
+  `dept` varchar(15) NOT NULL,
+  `regis_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `status1` varchar(15) NOT NULL,
+  `model_pn` varchar(50) NOT NULL,
+  `pn_name` varchar(50) NOT NULL,
+  `in_eco_num` varchar(50) NOT NULL,
+  `in_eco_path` varchar(100) NOT NULL,
+  `kr_eco_num` varchar(50) NOT NULL,
+  `kr_eco_path` varchar(50) NOT NULL,
+  `effec_date` date NOT NULL,
+  `expec_date` date NOT NULL,
+  `h_apply` varchar(50) NOT NULL,
+  `status2` varchar(15) NOT NULL,
+  `last_stock` int(11) NOT NULL,
+  `first_release_date` date NOT NULL,
+  `img_qc` varchar(150) NOT NULL,
+  `rm` varchar(100) NOT NULL,
+  `dwg_pn` varchar(100) NOT NULL,
+  `dwg_path` varchar(100) NOT NULL,
+  `last_stock_date` date NOT NULL,
+  `ket` varchar(150) NOT NULL,
+  `img_meeting` varchar(50) NOT NULL,
+  `aproval1` varchar(10) NOT NULL,
+  `aproval2` varchar(10) NOT NULL,
+  `aproval3` varchar(10) NOT NULL,
+  `aproval4` varchar(10) NOT NULL,
+  `aproval5` varchar(10) NOT NULL,
+  `aproval6` varchar(10) NOT NULL,
+  `aproval7` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `eco`
+--
+
+INSERT INTO `eco` (`id_eco`, `register`, `dept`, `regis_date`, `status1`, `model_pn`, `pn_name`, `in_eco_num`, `in_eco_path`, `kr_eco_num`, `kr_eco_path`, `effec_date`, `expec_date`, `h_apply`, `status2`, `last_stock`, `first_release_date`, `img_qc`, `rm`, `dwg_pn`, `dwg_path`, `last_stock_date`, `ket`, `img_meeting`, `aproval1`, `aproval2`, `aproval3`, `aproval4`, `aproval5`, `aproval6`, `aproval7`) VALUES
+(1, 'Agung', 'RnD', '2025-10-15 00:13:20', 'Complete', '42C2', '1 Stand pole', 'KL309475', 'EDLM5003125.html', 'EKH968594', 'EDLM5003126.html', '2025-10-31', '2025-10-31', 'Running Change', 'Complete', 1500, '0000-00-00', '', 'MAZ67571022', 'MAZ67571022', 'MAZ67571022 - 2D V1.8 (OLED A2).pdf', '2025-10-13', '', 'eco_meeting.png', 'Approved', 'Approved', 'Approved', 'Approved', 'Approved', 'Approved', 'Approved');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tabel_material`
+--
+
+CREATE TABLE `tabel_material` (
+  `id` int(11) NOT NULL,
+  `id_eco` int(11) NOT NULL,
+  `material_no` varchar(50) NOT NULL,
+  `current_stock` int(11) DEFAULT NULL,
+  `effective_date` date DEFAULT NULL,
+  `exhaust_date` date DEFAULT NULL,
+  `shipping_available` varchar(20) DEFAULT NULL,
+  `issue` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tabel_material`
+--
+
+INSERT INTO `tabel_material` (`id`, `id_eco`, `material_no`, `current_stock`, `effective_date`, `exhaust_date`, `shipping_available`, `issue`) VALUES
+(1, 1, 'MAZ67571022', 1500, '2025-10-31', '2025-10-31', 'Possible', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id_user` int(11) NOT NULL,
+  `nik` varchar(10) NOT NULL,
+  `nama` varchar(20) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `level` int(11) NOT NULL,
+  `image` varchar(15) NOT NULL,
+  `dept` varchar(15) NOT NULL,
+  `is_active` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id_user`, `nik`, `nama`, `password`, `level`, `image`, `dept`, `is_active`) VALUES
+(1, '1234', 'Admin', '0192023a7bbd73250516f069df18b500', 1, 'default.png', '', 1),
+(2, '5678', 'User', '6ad14ba9986e3615423dfca256d04e3f', 2, 'default.png', '', 1),
+(3, '123', 'Kim j', '98467a817e2ff8c8377c1bf085da7138', 1, 'default.png', 'RnD', 1),
+(4, '7531', 'Agung', '6f5d0ad4bc971cddc51a0c5f74bdf3fd', 1, 'default.png', 'RnD', 1),
+(5, '3659', 'Pendi', '69c3a9575f4120dc97068863bb8b60ef', 1, 'default.png', 'Assembly', 1),
+(6, '7854', 'Rika', '2f6b87bf490402877f19ee52998f2fa6', 1, 'default.png', 'PPIC', 1),
+(7, '2545', 'Aripin', '99b3069a894d080a128ea398766b2a8c', 1, 'default.png', 'QC', 1),
+(8, '3254', 'Ermawan', '24ef73e81936e8a146597280af49ecf2', 1, 'default.png', 'Injection', 1),
+(9, '6547', 'Joni', '1c0ac25b077a885dc53d91b05b14544e', 1, 'default.png', 'Molding', 1),
+(10, '8524', 'Eka', 'e48ec16d066a59dffbe1e352ad0710d7', 1, 'default.png', 'Materials', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `bom`
+--
+ALTER TABLE `bom`
+  ADD PRIMARY KEY (`id_bom`);
+
+--
+-- Indexes for table `delivery_schedule`
+--
+ALTER TABLE `delivery_schedule`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `eco`
+--
+ALTER TABLE `eco`
+  ADD PRIMARY KEY (`id_eco`);
+
+--
+-- Indexes for table `tabel_material`
+--
+ALTER TABLE `tabel_material`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id_user`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `bom`
+--
+ALTER TABLE `bom`
+  MODIFY `id_bom` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `delivery_schedule`
+--
+ALTER TABLE `delivery_schedule`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `eco`
+--
+ALTER TABLE `eco`
+  MODIFY `id_eco` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tabel_material`
+--
+ALTER TABLE `tabel_material`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
