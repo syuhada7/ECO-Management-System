@@ -123,5 +123,75 @@
             </div>
         </div>
     </div>
+    <!-- Komentar -->
+    <div class="box">
+        <div class="box-header">
+            <i class="fa fa-list"></i>
+            <h3 class="box-title">Commentary List</h3>
+            <div class="pull-right">
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#komenModal"><i class="fa fa-plus"></i> Create</button>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <th>User name</th>
+                <th>Date</th>
+                <th>Remaks</th>
+            </thead>
+            <tbody>
+                <?php foreach ($row2->result() as $key => $komen) : ?>
+                    <tr>
+                        <td><?= $komen->nama_user ?></td>
+                        <td><?= $komen->date_komen ?></td>
+                        <td><?= $komen->komen ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Input -->
+    <div class="modal fade" id="komenModal" tabindex="-1" role="dialog" aria-labelledby="komenModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="komenModal">Input Commentary</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= site_url('eco_public/komentar') ?>" method="POST">
+                        <div class="form-group row">
+                            <div class="col-lg-6">
+                                <label>Name *</label>
+                                <input type="text" name="nama_user" class="form-control">
+                                <input type="hidden" name="id_eco" value="<?= $data->id_eco ?>" class="form-control">
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Date</label>
+                                <?php date_default_timezone_set('Asia/Jakarta'); ?>
+                                <input type="text" name="date_komen"
+                                    value="<?= date('d F Y H:i:s'); ?>"
+                                    class="form-control" readonly>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg">
+                                <label>Commentary *</label>
+                                <textarea name="komentar" class="form-control"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-paper-plane"></i> Save</button>
+                            <button type="reset" class="btn btn-sm btn-default"><i class="fa fa-undo"></i> Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 <!-- /.content -->

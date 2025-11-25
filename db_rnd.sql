@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2025 at 08:03 AM
+-- Generation Time: Nov 25, 2025 at 04:58 AM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -96,12 +96,19 @@ CREATE TABLE `eco` (
   `aproval7` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `eco`
+-- Table structure for table `komentar`
 --
 
-INSERT INTO `eco` (`id_eco`, `register`, `dept`, `regis_date`, `status1`, `model_pn`, `pn_name`, `in_eco_num`, `in_eco_path`, `kr_eco_num`, `kr_eco_path`, `effec_date`, `expec_date`, `h_apply`, `status2`, `last_stock`, `first_release_date`, `img_qc`, `rm`, `dwg_pn`, `dwg_path`, `last_stock_date`, `ket`, `img_meeting`, `aproval1`, `aproval2`, `aproval3`, `aproval4`, `aproval5`, `aproval6`, `aproval7`) VALUES
-(1, 'Agung', 'RnD', '2025-10-15 00:13:20', 'Complete', '42C2', '1 Stand pole', 'KL309475', 'EDLM5003125.html', 'EKH968594', 'EDLM5003126.html', '2025-10-31', '2025-10-31', 'Running Change', 'Complete', 1500, '0000-00-00', '', 'MAZ67571022', 'MAZ67571022', 'MAZ67571022 - 2D V1.8 (OLED A2).pdf', '2025-10-13', '', 'eco_meeting.png', 'Approved', 'Approved', 'Approved', 'Approved', 'Approved', 'Approved', 'Approved');
+CREATE TABLE `komentar` (
+  `id_komen` int(11) NOT NULL,
+  `id_eco` int(11) NOT NULL,
+  `nama_user` varchar(100) NOT NULL,
+  `date_komen` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `komen` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -119,13 +126,6 @@ CREATE TABLE `tabel_material` (
   `shipping_available` varchar(20) DEFAULT NULL,
   `issue` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tabel_material`
---
-
-INSERT INTO `tabel_material` (`id`, `id_eco`, `material_no`, `current_stock`, `effective_date`, `exhaust_date`, `shipping_available`, `issue`) VALUES
-(1, 1, 'MAZ67571022', 1500, '2025-10-31', '2025-10-31', 'Possible', NULL);
 
 -- --------------------------------------------------------
 
@@ -183,6 +183,12 @@ ALTER TABLE `eco`
   ADD PRIMARY KEY (`id_eco`);
 
 --
+-- Indexes for table `komentar`
+--
+ALTER TABLE `komentar`
+  ADD PRIMARY KEY (`id_komen`);
+
+--
 -- Indexes for table `tabel_material`
 --
 ALTER TABLE `tabel_material`
@@ -214,13 +220,19 @@ ALTER TABLE `delivery_schedule`
 -- AUTO_INCREMENT for table `eco`
 --
 ALTER TABLE `eco`
-  MODIFY `id_eco` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_eco` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `komentar`
+--
+ALTER TABLE `komentar`
+  MODIFY `id_komen` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `tabel_material`
 --
 ALTER TABLE `tabel_material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user`

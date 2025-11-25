@@ -23,7 +23,10 @@
                     <div class="form-group">
                         <div class="col-lg-4">
                             <label>Registration date</label>
-                            <input type="text" name="regis_date" value="<?= date("d F Y H:i:s"); ?>" class="form-control" readonly>
+                            <?php date_default_timezone_set('Asia/Jakarta'); ?>
+                            <input type="text" name="regis_date"
+                                value="<?= date('d F Y H:i:s'); ?>"
+                                class="form-control" readonly>
                         </div>
                         <div class="col-lg-4">
                             <label>Departement</label>

@@ -68,6 +68,7 @@ class ECO extends CI_Controller
     public function approval($id)
     {
         $data['row'] = $this->Eco_model->get($id);
+        $data['row2'] = $this->db->get('komentar');
         $this->template->load('templates/template', 'eco/approval', $data);
     }
     public function inspection($id)
@@ -281,7 +282,20 @@ class ECO extends CI_Controller
         redirect('eco');
     }
 
+    //save komentar
+    public function komentar()
+    {
+        $id   = $this->input->post('id_eco');
 
+        // insert
+        $data = [
+            'id_eco'        => $this->input->post('id_eco'),
+            'nama_user'     => $this->input->post('nama_user'),
+            'komen'         => $this->input->post('komentar')
+        ];
+        $this->Eco_model->insert_komen($data);
+        redirect('eco/approval/' . $id);
+    }
 
     // Ajax ambil data delivery schedule dari DB
     public function get_delivery($id = null, $material_no = null)

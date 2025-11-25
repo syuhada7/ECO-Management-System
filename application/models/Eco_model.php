@@ -14,6 +14,7 @@ class Eco_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+
     public function get_next_id()
     {
         $this->db->select_max('id_eco');
@@ -21,6 +22,7 @@ class Eco_model extends CI_Model
         $result = $query->row();
         return $result ? $result->id_eco + 1 : 1;
     }
+
     public function get_rm($id, $rm)
     {
         $this->db->from('eco');
@@ -29,9 +31,15 @@ class Eco_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+
     public function insert($data)
     {
         return $this->db->insert($this->table, $data);
+    }
+
+    public function insert_komen($data)
+    {
+        return $this->db->insert('komentar', $data);
     }
 
     public function update_meeting($data)
