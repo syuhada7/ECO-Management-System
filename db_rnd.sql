@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2025 at 04:58 AM
+-- Generation Time: Jan 07, 2026 at 01:49 AM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -56,6 +56,13 @@ CREATE TABLE `delivery_schedule` (
   `regis_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `delivery_schedule`
+--
+
+INSERT INTO `delivery_schedule` (`id`, `id_eco`, `material_no`, `delivery_schedule`, `previous_inventory`, `quantity_shipped`, `current_stock`, `shipped_wio`, `note`, `regis`, `dept`, `regis_date`) VALUES
+(1, 1, 'MAZ67571022', '2026-01-17', 25, 20, 5, 'DJK2020', '', 'Admin', '', '2026-01-03 08:16:35');
+
 -- --------------------------------------------------------
 
 --
@@ -69,6 +76,9 @@ CREATE TABLE `eco` (
   `regis_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `status1` varchar(15) NOT NULL,
   `model_pn` varchar(50) NOT NULL,
+  `model_pn2` varchar(50) NOT NULL,
+  `model_pn3` varchar(50) NOT NULL,
+  `model_pn4` varchar(50) NOT NULL,
   `pn_name` varchar(50) NOT NULL,
   `in_eco_num` varchar(50) NOT NULL,
   `in_eco_path` varchar(100) NOT NULL,
@@ -95,6 +105,37 @@ CREATE TABLE `eco` (
   `aproval6` varchar(10) NOT NULL,
   `aproval7` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `eco`
+--
+
+INSERT INTO `eco` (`id_eco`, `register`, `dept`, `regis_date`, `status1`, `model_pn`, `model_pn2`, `model_pn3`, `model_pn4`, `pn_name`, `in_eco_num`, `in_eco_path`, `kr_eco_num`, `kr_eco_path`, `effec_date`, `expec_date`, `h_apply`, `status2`, `last_stock`, `first_release_date`, `img_qc`, `rm`, `dwg_pn`, `dwg_path`, `last_stock_date`, `ket`, `img_meeting`, `aproval1`, `aproval2`, `aproval3`, `aproval4`, `aproval5`, `aproval6`, `aproval7`) VALUES
+(1, 'Admin', 'IT', '2026-01-07 00:48:43', 'COMPLETE', '55C2', '65C2', '42C2', '', 'BACK COVER', 'EDLM5003125', 'EDLM5003125.html', 'EDLM5003126', 'EDLM5003126.html', '2026-01-09', '2026-01-10', 'RUNNING CHANGE', 'On Progress', 5, '2026-01-06', 'MAPPING.xlsx', 'MAZ67571022', 'MAZ67571022', 'MAZ67571022_-_2D_V1_8_(OLED_A2).pdf', '2026-01-03', '', 'ECO_관리_프로그램_update__Ver04.pptx', '', '', '', '', '', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `f_date`
+--
+
+CREATE TABLE `f_date` (
+  `id_fdate` int(11) NOT NULL,
+  `id_eco` int(11) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  `depart` varchar(100) NOT NULL,
+  `file1` varchar(225) NOT NULL,
+  `date_1` date NOT NULL DEFAULT current_timestamp(),
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `f_date`
+--
+
+INSERT INTO `f_date` (`id_fdate`, `id_eco`, `username`, `depart`, `file1`, `date_1`, `date_created`) VALUES
+(1, 1, 'Admin', 'IT', 'MAP-HDI.xlsx', '2026-01-05', '2026-01-07 00:10:48'),
+(2, 1, 'Admin', 'IT', 'MAPPING.xlsx', '2026-01-06', '2026-01-07 00:11:19');
 
 -- --------------------------------------------------------
 
@@ -127,6 +168,13 @@ CREATE TABLE `tabel_material` (
   `issue` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `tabel_material`
+--
+
+INSERT INTO `tabel_material` (`id`, `id_eco`, `material_no`, `current_stock`, `effective_date`, `exhaust_date`, `shipping_available`, `issue`) VALUES
+(1, 1, 'MAZ67571022', 5, '2026-01-09', '2026-01-10', 'Material Empty', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -149,7 +197,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `nik`, `nama`, `password`, `level`, `image`, `dept`, `is_active`) VALUES
-(1, '1234', 'Admin', '0192023a7bbd73250516f069df18b500', 1, 'default.png', '', 1),
+(1, '1234', 'Admin', '0192023a7bbd73250516f069df18b500', 1, 'default.png', 'IT', 1),
 (2, '5678', 'User', '6ad14ba9986e3615423dfca256d04e3f', 2, 'default.png', '', 1),
 (3, '123', 'Kim j', '98467a817e2ff8c8377c1bf085da7138', 1, 'default.png', 'RnD', 1),
 (4, '7531', 'Agung', '6f5d0ad4bc971cddc51a0c5f74bdf3fd', 1, 'default.png', 'RnD', 1),
@@ -183,6 +231,12 @@ ALTER TABLE `eco`
   ADD PRIMARY KEY (`id_eco`);
 
 --
+-- Indexes for table `f_date`
+--
+ALTER TABLE `f_date`
+  ADD PRIMARY KEY (`id_fdate`);
+
+--
 -- Indexes for table `komentar`
 --
 ALTER TABLE `komentar`
@@ -214,13 +268,19 @@ ALTER TABLE `bom`
 -- AUTO_INCREMENT for table `delivery_schedule`
 --
 ALTER TABLE `delivery_schedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `eco`
 --
 ALTER TABLE `eco`
-  MODIFY `id_eco` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_eco` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `f_date`
+--
+ALTER TABLE `f_date`
+  MODIFY `id_fdate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `komentar`
@@ -232,7 +292,7 @@ ALTER TABLE `komentar`
 -- AUTO_INCREMENT for table `tabel_material`
 --
 ALTER TABLE `tabel_material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`
