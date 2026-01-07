@@ -15,6 +15,16 @@ class Eco_model extends CI_Model
         return $query;
     }
 
+    public function get_id($id = null)
+    {
+        $this->db->from('f_date');
+        if ($id != null) {
+            $this->db->where('id_eco', $id);
+        }
+        $query = $this->db->get();
+        return $query;
+    }
+
     public function get_next_id()
     {
         $this->db->select_max('id_eco');

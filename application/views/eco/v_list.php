@@ -26,6 +26,7 @@
                     <th>Registration date</th>
                     <th>IN ECO</th>
                     <th>KR ECO</th>
+                    <th>Materials</th>
                     <th>Registrant</th>
                     <th>Effective date</th>
                     <th>How to apply</th>
@@ -58,6 +59,7 @@
                                     : ($data->kr_eco_num ?: "—")
                                 ?>
                             </td>
+                            <td><?= $data->rm ?></td>
                             <td><?= $data->register ?></td>
                             <td style="background-color:
                 <?php

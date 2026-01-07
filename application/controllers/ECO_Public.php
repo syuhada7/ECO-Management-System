@@ -50,6 +50,7 @@ class ECO_Public extends CI_Controller
     public function inspection($id)
     {
         $data['row'] = $this->Eco_model->get($id);
+        $data['row2'] = $this->Eco_model->get_id($id);
         $this->template->load('templates/template_public', 'public_eco/inspection', $data);
     }
     public function approval($id)

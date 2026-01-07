@@ -25,10 +25,10 @@
                     <th>Departement</th>
                     <th>Registrations Date</th>
                     <th>Meeting Report</th>
-                    <th>Model</th>
-                    <th>P/N Name</th>
                     <th>IN ECO</th>
                     <th>KR ECO</th>
+                    <th>Model</th>
+                    <th>P/N Name</th>
                     <th>Registrant</th>
                     <th>Effective Date</th>
                     <th>How to Apply</th>
@@ -48,10 +48,9 @@
                             <td><?= $no++; ?></td>
                             <td><?= $data->dept ?></td>
                             <td><?= $data->regis_date ?></td>
-                            <td><a href="<?= site_url('eco/meeting/' . $data->id_eco) ?>"><?= $data->status1 ?></a></td>
-                            <td><?= $data->model_pn ?></td>
-                            <td style="background-color: <?= empty($data->pn_name) ? 'red' : '' ?>">
-                                <?= !empty($data->pn_name) ? $data->pn_name : '' ?>
+                            <td style="background-color: <?= empty($data->status1) ? 'red' : '' ?>">
+                                <a href="<?= site_url('eco/meeting/' . $data->id_eco) ?>">
+                                    <?= $data->status1 ?></a>
                             </td>
                             <td style="background-color: 
                                 <?=
@@ -71,6 +70,18 @@
                                     : ($data->kr_eco_num ?: "—")
                                 ?>
                             </td>
+                            <td rowspan="4">
+                                <?= $data->model_pn ?>
+                                <br>
+                                <?= $data->model_pn2 ?>
+                                <br>
+                                <?= $data->model_pn3 ?>
+                                <br>
+                                <?= $data->model_pn4 ?>
+                            </td>
+                            <td style="background-color: <?= empty($data->pn_name) ? 'red' : '' ?>">
+                                <?= !empty($data->pn_name) ? $data->pn_name : '' ?>
+                            </td>
                             <td><?= $data->register ?></td>
                             <td style="background-color:
                                 <?php
@@ -81,9 +92,14 @@
                             </td>
                             <td><?= $data->h_apply ?></td>
                             <td><?= $data->status2 ?></td>
-                            <td><a href="<?= site_url('eco/inspection/' . $data->id_eco) ?>"><?= $data->first_release_date ?></a></td>
+                            <td style="background-color: <?= empty($data->first_release_datee) ? 'red' : '' ?>">
+                                <a href="<?= site_url('eco/inspection/' . $data->id_eco) ?>"><?= $data->first_release_date ?></a>
+                            </td>
                             <td><a href="<?= site_url('uploads/eco_file/' . rawurlencode($data->dwg_path)) ?>" target="_blank"><?= $data->dwg_pn ?></a></td>
-                            <td><a href="<?= site_url('eco/v_list/' . $data->id_eco . '/' . $data->rm); ?>"><?= $data->rm ?></a></td>
+                            <td style="background-color: <?= empty($data->last_stock) ? '' : 'red' ?>">
+                                <a href="<?= site_url('eco/v_list/' . $data->id_eco . '/' . $data->rm); ?>">
+                                    <?= $data->rm ?></a>
+                            </td>
                             <td><?= $data->last_stock ?></td>
                             <?php
                             $approvals = [

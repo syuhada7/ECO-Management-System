@@ -30,18 +30,42 @@
                             <?php else : ?>
                                 <!-- Jika sudah ada file -->
                                 <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#imgModal<?= $data->id_eco ?>">
-                                    Replace File <i class="fa fa-refresh"></i>
+                                    Upload Other File Inspection <i class="fa fa-refresh"></i>
                                 </button>
                             <?php endif; ?>
                         </div>
                     </div>
-
-                    <!-- Tampilkan gambar jika sudah ada -->
+                    <hr>
                     <?php if (!empty($data->img_qc)) : ?>
-                        <div style="display:inline-block; margin:8px; text-align:center;">
-                            <img src="<?= site_url('uploads/eco_file/' . $data->img_qc) ?>"
-                                alt="Meeting File"
-                                style="width:auto; height:auto; border:1px solid #ccc; padding:4px; max-width:500px;">
+                        <?php
+                        $file      = $data->img_qc;
+                        $file_path = site_url('uploads/eco_file/' . $file);
+                        $ext       = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                        ?>
+                        <div style="margin:15px 0; text-align:center;">
+                            <?php if ($ext === 'pdf') : ?>
+                                <!-- PDF Preview -->
+                                <iframe src="<?= $file_path ?>"
+                                    width="100%"
+                                    height="500px"
+                                    style="border:1px solid #ccc;">
+                                </iframe>
+                            <?php elseif ($ext === 'xlsx' || $ext === 'xls') : ?>
+                                <!-- Excel Icon -->
+                                <i class="fa fa-file-excel-o"
+                                    style="font-size:80px; color:#1D6F42;"></i>
+                                <p><strong><?= $file ?></strong></p>
+                            <?php elseif ($ext === 'pptx' || $ext === 'ppt') : ?>
+                                <!-- PowerPoint Icon -->
+                                <i class="fa fa-file-powerpoint-o"
+                                    style="font-size:80px; color:#D24726;"></i>
+                                <p><strong><?= $file ?></strong></p>
+                            <?php else : ?>
+                                <!-- File lainnya -->
+                                <i class="fa fa-file-o"
+                                    style="font-size:80px;"></i>
+                                <p><strong><?= $file ?></strong></p>
+                            <?php endif; ?>
                         </div>
                     <?php endif; ?>
 
@@ -64,6 +88,7 @@
                                         <div class="col-lg-8">
                                             <label>First release date</label>
                                             <input type="date" name="fr_date" value="<?= $data->first_release_date ?>" class="form-control">
+                                            <input type="hidden" name="regis_id" value="<?= $this->fungsi->user_login()->nama; ?>" class="form-control" readonly>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -71,6 +96,7 @@
                                             <label><?= empty($data->img_qc) ? 'Select File' : 'Select New File to Replace'; ?></label>
                                             <input type="file" name="attachment1" required>
                                             <input type="hidden" name="id_eco" value="<?= $data->id_eco ?>">
+                                            <input type="hidden" name="dept" value="<?= $this->fungsi->user_login()->dept; ?>" class="form-control" readonly>
                                         </div>
                                     </div>
 
@@ -87,10 +113,38 @@
                             </div>
                         </div>
                     </div>
-
                 <?php endforeach; ?>
+                <!-- Tabel -->
+                <thead>
+                    <tr>
+                        <th colspan="7" class="text-center">History Upload File Inspections</th>
+                    </tr>
+                    <tr>
+                        <td>Registrations Date</td>
+                        <td>Registrant</td>
+                        <td>Departement</td>
+                        <td>File Name</td>
+                        <td>First Release Date</td>
+                        <td>Actions</td>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <?php foreach ($row2->result() as $key => $data2) : ?>
+                        <tr>
+                            <td><?= $data2->date_created  ?></td>
+                            <td><?= $data2->username  ?></td>
+                            <td><?= $data2->depart  ?></td>
+                            <td><?= $data2->file1 ?></td>
+                            <td><?= $data2->date_1 ?></td>
+                            <td><a href="<?= $data2->file1 ?>"
+                                    class="btn btn-sm btn-success"
+                                    download>
+                                    <i class="fa fa-download"></i> Download File
+                                </a></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tfoot>
             </table>
-
             <br>
             <div class="pull-right">
                 <div class="btn-group">

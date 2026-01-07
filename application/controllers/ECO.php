@@ -74,6 +74,7 @@ class ECO extends CI_Controller
     public function inspection($id)
     {
         $data['row'] = $this->Eco_model->get($id);
+        $data['row2'] = $this->Eco_model->get_id($id);
         $this->template->load('templates/template', 'eco/inspection', $data);
     }
     public function status_report()
@@ -122,9 +123,12 @@ class ECO extends CI_Controller
             'dept'            => $this->input->post('dept'),
             'register'        => $this->input->post('regis_id'),
             'model_pn'        => $this->input->post('model_pn'),
+            'model_pn2'       => $this->input->post('model_pn2'),
+            'model_pn3'       => $this->input->post('model_pn3'),
+            'model_pn4'       => $this->input->post('model_pn4'),
             'pn_name'         => $this->input->post('pn_name'),
-            'status1'         => "In Progress",
-            'status2'         => "In Progress",
+            'status1'         => "On Schedule",
+            'status2'         => "On Progress",
             'in_eco_num'      => $this->input->post('in_eco_num'),
             'in_eco_path'     => $file1,
             'kr_eco_num'      => $this->input->post('kr_eco_num'),
@@ -188,8 +192,8 @@ class ECO extends CI_Controller
         $id = $this->input->post('id_eco');
         // Konfigurasi upload
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'jpg|jpeg|png';
-        $config['max_size']      = 4096; // 2MB
+        $config['allowed_types'] = 'pdf|xlsx|xls|pptx|ppt';
+        $config['max_size']      = 30720; // 15MB
 
         if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, true);
@@ -203,7 +207,8 @@ class ECO extends CI_Controller
         }
         // Ambil input dari form
         $data = [
-            'img_meeting'   => $file1
+            'img_meeting'   => $file1,
+            'status1'       => 'COMPLETE'
         ];
         $this->Eco_model->update_meeting($data);
         redirect('eco/meeting/' . $id);
@@ -214,8 +219,8 @@ class ECO extends CI_Controller
         $id = $this->input->post('id_eco');
         // Konfigurasi upload
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'jpg|jpeg|png';
-        $config['max_size']      = 4096; // 2MB
+        $config['allowed_types'] = 'pdf|xlsx|xls|pptx|ppt';
+        $config['max_size']      = 30720; // 15MB
 
         if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, true);
@@ -232,7 +237,18 @@ class ECO extends CI_Controller
             'img_qc'             => $file1,
             'first_release_date' => $this->input->post('fr_date')
         ];
+
+        // update table materials
+        $data2 = [
+            'id_eco'                => $this->input->post('id_eco'),
+            'file1'                 => $file1,
+            'depart'                => $this->input->post('dept'),
+            'username'              => $this->input->post('regis_id'),
+            'date_1'                => $this->input->post('fr_date')
+        ];
+
         $this->Eco_model->update_inspection($data);
+        $this->db->insert('f_date', $data2);
         redirect('eco/inspection/' . $id);
     }
 
@@ -271,7 +287,7 @@ class ECO extends CI_Controller
                     $this->db->update('eco', ['status1' => 'Complete', 'status2' => 'Complete']);
                 } else {
                     $this->db->where('id_eco', $id_eco);
-                    $this->db->update('eco', ['status1' => 'In Progress', 'status2' => 'In Progress']);
+                    $this->db->update('eco', ['status1' => 'On Progress', 'status2' => 'On Progress']);
                 }
             }
         } else {

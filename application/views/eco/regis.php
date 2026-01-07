@@ -40,16 +40,6 @@
                     </div>
                     <div class="form-group">
                         <div class="col-lg-6">
-                            <label>Model</label>
-                            <input type="text" name="model_pn" class="form-control">
-                        </div>
-                        <div class="col-lg-6">
-                            <label>Product name</label>
-                            <input type="text" name="pn_name" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-lg-6">
                             <label>IN ECO No.</label>
                             <input type="text" name="in_eco_num" class="form-control">
                             <br>
@@ -60,6 +50,23 @@
                             <input type="text" name="kr_eco_num" class="form-control">
                             <br>
                             <input type="file" name="attachment2" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Model</label>
+                            <table>
+                                <tr>
+                                    <td style="padding-right:20px"><input type="text" name="model_pn" class="form-control"></td>
+                                    <td style="padding-right:20px"><input type="text" name="model_pn2" class="form-control"></td>
+                                    <td style="padding-right:20px"><input type="text" name="model_pn3" class="form-control"></td>
+                                    <td style="padding-right:20px"><input type="text" name="model_pn4" class="form-control"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Product name</label>
+                            <input type="text" name="pn_name" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">

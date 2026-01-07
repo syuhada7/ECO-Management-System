@@ -33,6 +33,46 @@
 
             <table class="table table-bordered table-striped">
                 <?php foreach ($row->result() as $key => $data) : ?>
+                    <hr>
+                    <?php if (!empty($data->img_meeting)) : ?>
+                        <?php
+                        $file      = $data->img_meeting;
+                        $file_path = site_url('uploads/eco_file/' . $file);
+                        $ext       = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                        ?>
+                        <div style="margin:15px 0; text-align:center;">
+                            <?php if ($ext === 'pdf') : ?>
+                                <!-- PDF Preview -->
+                                <iframe src="<?= $file_path ?>"
+                                    width="100%"
+                                    height="500px"
+                                    style="border:1px solid #ccc;">
+                                </iframe>
+                            <?php elseif ($ext === 'xlsx' || $ext === 'xls') : ?>
+                                <!-- Excel Icon -->
+                                <i class="fa fa-file-excel-o"
+                                    style="font-size:80px; color:#1D6F42;"></i>
+                                <p><strong><?= $file ?></strong></p>
+                            <?php elseif ($ext === 'pptx' || $ext === 'ppt') : ?>
+                                <!-- PowerPoint Icon -->
+                                <i class="fa fa-file-powerpoint-o"
+                                    style="font-size:80px; color:#D24726;"></i>
+                                <p><strong><?= $file ?></strong></p>
+                            <?php else : ?>
+                                <!-- File lainnya -->
+                                <i class="fa fa-file-o"
+                                    style="font-size:80px;"></i>
+                                <p><strong><?= $file ?></strong></p>
+                            <?php endif; ?>
+                            <!-- Download Button -->
+                            <br>
+                            <a href="<?= $file_path ?>"
+                                class="btn btn-sm btn-success"
+                                download>
+                                <i class="fa fa-download"></i> Download File
+                            </a>
+                        </div>
+                    <?php endif; ?>
                     <?php
                     // Ambil nama kolom departemen login
                     $user_col = isset($deptColumns[$dept]) ? $deptColumns[$dept] : null;
