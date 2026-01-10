@@ -67,7 +67,7 @@
                                     : ($data->kr_eco_num ?: "—")
                                 ?>
                             </td>
-                            <td rowspan="4">
+                            <td>
                                 <?= $data->model_pn ?>
                                 <br>
                                 <?= $data->model_pn2 ?>

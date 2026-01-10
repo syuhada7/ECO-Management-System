@@ -82,4 +82,57 @@ class Eco_model extends CI_Model
         $this->db->where('rm', $rm);
         $this->db->update('eco', $data);
     }
+
+    public function update()
+    {
+        $id = $this->input->post('id_eco');
+        $params = [
+            'model_pn'        =>  $this->input->post('model_pn'),
+            'model_pn2'       =>  $this->input->post('model_pn2'),
+            'model_pn3'       =>  $this->input->post('model_pn3'),
+            'model_pn4'       =>  $this->input->post('model_pn4'),
+            'pn_name'         =>  $this->input->post('pn_name'),
+            'in_eco_num'      =>  $this->input->post('in_eco_num'),
+            'kr_eco_num'      =>  $this->input->post('kr_eco_num'),
+            'last_stock'      =>  $this->input->post('cr_stock'),
+            'effec_date'      =>  $this->input->post('efect_date'),
+            'expec_date'      =>  $this->input->post('expec_date'),
+            'h_apply'         =>  $this->input->post('h-apply'),
+            'dwg_pn'          =>  $this->input->post('dwg_pn'),
+            'rm'              =>  $this->input->post('rm'),
+            'last_stock_date' =>  $this->input->post('regis_date'),
+            'ket'             =>  $this->input->post('ket'),
+            'u_update'        =>  $this->input->post('user_u'),
+            'date_update'     =>  date('Y-m-d H:i:s')
+        ];
+
+        if (!empty($this->input->post['attachment1'])) {
+            $params['in_eco_path'] =  $this->input->post['attachment1'];
+        }
+        if (!empty($this->input->post['attachment2'])) {
+            $params['kr_eco_path'] =  $this->input->post['attachment2'];
+        }
+        if (!empty($this->input->post['attachment3'])) {
+            $params['dwg_path'] =  $this->input->post['attachment3'];
+        }
+
+        $data2 = [
+            'id_eco'          =>  $id,
+            'current_stock'   =>  $this->input->post('cr_stock'),
+            'effective_date'  =>  $this->input->post('efect_date'),
+            'exhaust_date'    =>  $this->input->post('expec_date'),
+            'material_no'     =>  $this->input->post('rm'),
+            'u_update'        =>  $this->input->post('user_u'),
+            'date_update'     =>  date('Y-m-d H:i:s')
+        ];
+
+        $data3 = [
+            'current_stock'        =>  $this->input->post('cr_stock')
+        ];
+
+        $this->db->where('id_eco', $id);
+        $this->db->update('eco', $params);
+        $this->db->update('tabel_material', $data2);
+        $this->db->update('delivery_schedule', $data3);
+    }
 }

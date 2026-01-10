@@ -331,4 +331,77 @@ class ECO extends CI_Controller
         $data = $this->Delivery_model->get_by_material($material_no);
         echo json_encode($data);
     }
+
+    //edit register
+    public function edit($id)
+    {
+        $data['eco'] = $this->Eco_model->get($id)->row();
+        $this->template->load('templates/template', 'eco/update', $data);
+    }
+
+    public function update()
+    {
+        $post = $this->input->post(null, TRUE);
+        $id   = $post['id_eco'];
+
+        // ambil data lama
+        $eco = $this->Eco_model->get($id)->row();
+
+        $config['upload_path']   = './uploads/eco_file/';
+        $config['allowed_types'] = 'html|pptx|xlsx|pdf';
+        $config['max_size']      = 30720; // 15MB
+
+        $this->load->library('upload');
+
+        /* =========================
+       ATTACHMENT 1
+    ========================= */
+        if (!empty($_FILES['attachment1']['name'])) {
+            $this->upload->initialize($config);
+            if ($this->upload->do_upload('attachment1')) {
+
+                // hapus file lama
+                if ($eco->attachment1 && file_exists('./uploads/eco/' . $eco->attachment1)) {
+                    unlink('./uploads/eco/' . $eco->attachment1);
+                }
+
+                $post['attachment1'] = $this->upload->data('file_name');
+            }
+        }
+
+        /* =========================
+       ATTACHMENT 2
+    ========================= */
+        if (!empty($_FILES['attachment2']['name'])) {
+            $this->upload->initialize($config);
+            if ($this->upload->do_upload('attachment2')) {
+
+                if ($eco->attachment2 && file_exists('./uploads/eco/' . $eco->attachment2)) {
+                    unlink('./uploads/eco/' . $eco->attachment2);
+                }
+
+                $post['attachment2'] = $this->upload->data('file_name');
+            }
+        }
+
+        /* =========================
+       ATTACHMENT 3
+    ========================= */
+        if (!empty($_FILES['attachment3']['name'])) {
+            $this->upload->initialize($config);
+            if ($this->upload->do_upload('attachment3')) {
+
+                if ($eco->attachment3 && file_exists('./uploads/eco/' . $eco->attachment3)) {
+                    unlink('./uploads/eco/' . $eco->attachment3);
+                }
+
+                $post['attachment3'] = $this->upload->data('file_name');
+            }
+        }
+
+        $this->Eco_model->update();
+
+        $this->session->set_flashdata('success', 'Data ECO success update');
+        redirect('ECO');
+    }
 }

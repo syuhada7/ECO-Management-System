@@ -19,37 +19,43 @@
             </div>
             <div class="row">
                 <div class="col-lg">
-                    <?php echo form_open_multipart('eco/save'); ?>
+                    <?php echo form_open_multipart('eco/update'); ?>
+                    <input type="hidden" name="id_eco" value="<?= $eco->id_eco ?>">
                     <div class="form-group">
                         <div class="col-lg-4">
                             <label>Registration date</label>
                             <?php date_default_timezone_set('Asia/Jakarta'); ?>
                             <input type="text" name="regis_date"
-                                value="<?= date('d F Y H:i:s'); ?>"
+                                value="<?= $eco->regis_date ?>"
                                 class="form-control" readonly>
                         </div>
                         <div class="col-lg-4">
                             <label>Departement</label>
-                            <input type="text" name="dept" value="<?= $this->fungsi->user_login()->dept; ?>" class="form-control" readonly>
+                            <input type="text" name="dept" value="<?= $eco->dept ?>" class="form-control" readonly>
                         </div>
                         <div class="col-lg-4">
                             <label>Registrant</label>
-                            <input type="text" name="regis_id" value="<?= $this->fungsi->user_login()->nama; ?>" class="form-control" readonly>
-                            <input type="hidden" name="id_eco" value="<?= $next_id ?>" class="form-control">
+                            <input type="text" name="regis_id" value="<?= $eco->register ?>" class="form-control" readonly>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-lg-6">
                             <label>IN ECO No.</label>
-                            <input type="text" name="in_eco_num" class="form-control">
+                            <input type="text" name="in_eco_num" value="<?= $eco->in_eco_num ?>" class="form-control">
                             <br>
-                            <input type="file" name="attachment1" required>
+                            <input type="file" name="attachment1">
+                            <?php if ($eco->in_eco_path): ?>
+                                <small>Current File: <?= $eco->in_eco_path ?></small>
+                            <?php endif; ?>
                         </div>
                         <div class="col-lg-6">
                             <label>KR ECO No.</label>
-                            <input type="text" name="kr_eco_num" class="form-control">
+                            <input type="text" name="kr_eco_num" value="<?= $eco->kr_eco_num ?>" class="form-control">
                             <br>
-                            <input type="file" name="attachment2" required>
+                            <input type="file" name="attachment2">
+                            <?php if ($eco->kr_eco_path): ?>
+                                <small>Current File: <?= $eco->kr_eco_path ?></small>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="form-group">
@@ -57,55 +63,68 @@
                             <label>Model</label>
                             <table>
                                 <tr>
-                                    <td style="padding-right:20px"><input type="text" name="model_pn" class="form-control"></td>
-                                    <td style="padding-right:20px"><input type="text" name="model_pn2" class="form-control"></td>
-                                    <td style="padding-right:20px"><input type="text" name="model_pn3" class="form-control"></td>
-                                    <td style="padding-right:20px"><input type="text" name="model_pn4" class="form-control"></td>
-                                </tr>
+                                    <td style="padding-right:20px"><input type="text" name="model_pn" value="<?= $eco->model_pn ?>" class="form-control"></td>
+                                    <td style="padding-right:20px"><input type="text" name="model_pn2" value="<?= $eco->model_pn2 ?>" class="form-control"></td>
+                                    <td style="padding-right:20px"><input type="text" name="model_pn3" value="<?= $eco->model_pn3 ?>" class="form-control"></td>
+                                    <td style="padding-right:20px"><input type="text" name="model_pn4" value="<?= $eco->model_pn4 ?>" class="form-control"></td>
                             </table>
                         </div>
                         <div class="col-lg-6">
                             <label>Product name</label>
-                            <input type="text" name="pn_name" class="form-control">
+                            <input type="text" name="pn_name" value="<?= $eco->pn_name ?>" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-lg-4">
                             <label>Current stock</label>
-                            <input type="text" name="cr_stock" class="form-control">
+                            <input type="number" name="cr_stock" value="<?= $eco->last_stock ?>" class="form-control">
                         </div>
                         <div class="col-lg-4">
                             <label>Effective date</label>
-                            <input type="date" name="efect_date" class="form-control">
+                            <input type="date" name="efect_date" value="<?= $eco->effec_date ?>" class="form-control">
                         </div>
                         <div class="col-lg-4">
                             <label>Expected exhaustion date</label>
-                            <input type="date" name="expec_date" value="" class="form-control">
+                            <input type="date" name="expec_date" value="<?= $eco->expec_date ?>" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-lg-4">
                             <label>How to apply</label>
-                            <input type="text" name="h-apply" class="form-control">
+                            <input type="text" name="h-apply" value="<?= $eco->h_apply ?>" class="form-control">
                         </div>
                         <div class="col-lg-4">
                             <label>Drawing P/N</label>
-                            <input type="text" name="dwg_pn" class="form-control">
+                            <input type="text" name="dwg_pn" value="<?= $eco->dwg_pn ?>" class="form-control">
                             <br>
-                            <input type="file" name="attachment3" required>
+                            <input type="file" name="attachment3">
+                            <?php if ($eco->dwg_path): ?>
+                                <small>Current File: <?= $eco->dwg_path ?></small>
+                            <?php endif; ?>
                             <br>
                         </div>
                         <div class="col-lg-4">
                             <label>Related Sub Materials</label>
-                            <input type="text" name="rm" class="form-control">
+                            <input type="text" name="rm" value="<?= $eco->rm ?>" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <label>Note</label>
-                            <textarea name="ket" class="form-control"></textarea>
+                            <textarea name="ket" class="form-control"><?= $eco->ket ?></textarea>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
+                            <label>User Update</label>
+                            <input type="text" name="user_u" value="<?= $this->fungsi->user_login()->nama; ?>" class="form-control" readonly>
+                        </div>
+                        <div class="col-lg-4">
+                            <label>Update time</label>
+                            <?php date_default_timezone_set('Asia/Jakarta'); ?>
+                            <input type="text" name="date_update"
+                                value="<?= date('d F Y H:i:s'); ?>"
+                                class="form-control" readonly>
+                        </div>
+                        <div class="col-lg-4">
                             <br>
                             <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-save"></i> Save</button> |
                             <button type="reset" class="btn btn-sm btn-default"><i class="fa fa-undo"></i> Reset</button>

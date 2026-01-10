@@ -21,7 +21,7 @@
         <div class="box-body table-responsive">
             <table id="example1" class="table table-bordered table-striped">
                 <thead>
-                    <th>No</th>
+                    <th></th>
                     <th>Departement</th>
                     <th>Registrations Date</th>
                     <th>Meeting Report</th>
@@ -41,11 +41,13 @@
                 </thead>
                 <tbody>
                     <?php
-                    $no = 1;
                     foreach ($row->result() as $key => $data) :
                     ?>
                         <tr>
-                            <td><?= $no++; ?></td>
+                            <td><a href="<?= site_url('eco/edit/' . $data->id_eco) ?>" class="btn btn-small btn-warning">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </td>
                             <td><?= $data->dept ?></td>
                             <td><?= $data->regis_date ?></td>
                             <td style="background-color: <?= empty($data->status1) ? 'red' : '' ?>">
@@ -70,7 +72,7 @@
                                     : ($data->kr_eco_num ?: "—")
                                 ?>
                             </td>
-                            <td rowspan="4">
+                            <td>
                                 <?= $data->model_pn ?>
                                 <br>
                                 <?= $data->model_pn2 ?>
