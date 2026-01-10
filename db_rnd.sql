@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 07, 2026 at 01:49 AM
+-- Generation Time: Jan 10, 2026 at 04:48 AM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -61,7 +61,7 @@ CREATE TABLE `delivery_schedule` (
 --
 
 INSERT INTO `delivery_schedule` (`id`, `id_eco`, `material_no`, `delivery_schedule`, `previous_inventory`, `quantity_shipped`, `current_stock`, `shipped_wio`, `note`, `regis`, `dept`, `regis_date`) VALUES
-(1, 1, 'MAZ67571022', '2026-01-17', 25, 20, 5, 'DJK2020', '', 'Admin', '', '2026-01-03 08:16:35');
+(1, 1, 'MAZ67571022', '2026-01-17', 25, 20, 20, 'DJK2020', '', 'Admin', '', '2026-01-10 03:43:30');
 
 -- --------------------------------------------------------
 
@@ -73,7 +73,7 @@ CREATE TABLE `eco` (
   `id_eco` int(11) NOT NULL,
   `register` varchar(50) NOT NULL,
   `dept` varchar(15) NOT NULL,
-  `regis_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `regis_date` datetime NOT NULL DEFAULT current_timestamp(),
   `status1` varchar(15) NOT NULL,
   `model_pn` varchar(50) NOT NULL,
   `model_pn2` varchar(50) NOT NULL,
@@ -103,15 +103,17 @@ CREATE TABLE `eco` (
   `aproval4` varchar(10) NOT NULL,
   `aproval5` varchar(10) NOT NULL,
   `aproval6` varchar(10) NOT NULL,
-  `aproval7` varchar(10) NOT NULL
+  `aproval7` varchar(10) NOT NULL,
+  `u_update` varchar(150) NOT NULL,
+  `date_update` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `eco`
 --
 
-INSERT INTO `eco` (`id_eco`, `register`, `dept`, `regis_date`, `status1`, `model_pn`, `model_pn2`, `model_pn3`, `model_pn4`, `pn_name`, `in_eco_num`, `in_eco_path`, `kr_eco_num`, `kr_eco_path`, `effec_date`, `expec_date`, `h_apply`, `status2`, `last_stock`, `first_release_date`, `img_qc`, `rm`, `dwg_pn`, `dwg_path`, `last_stock_date`, `ket`, `img_meeting`, `aproval1`, `aproval2`, `aproval3`, `aproval4`, `aproval5`, `aproval6`, `aproval7`) VALUES
-(1, 'Admin', 'IT', '2026-01-07 00:48:43', 'COMPLETE', '55C2', '65C2', '42C2', '', 'BACK COVER', 'EDLM5003125', 'EDLM5003125.html', 'EDLM5003126', 'EDLM5003126.html', '2026-01-09', '2026-01-10', 'RUNNING CHANGE', 'On Progress', 5, '2026-01-06', 'MAPPING.xlsx', 'MAZ67571022', 'MAZ67571022', 'MAZ67571022_-_2D_V1_8_(OLED_A2).pdf', '2026-01-03', '', 'ECO_관리_프로그램_update__Ver04.pptx', '', '', '', '', '', '', '');
+INSERT INTO `eco` (`id_eco`, `register`, `dept`, `regis_date`, `status1`, `model_pn`, `model_pn2`, `model_pn3`, `model_pn4`, `pn_name`, `in_eco_num`, `in_eco_path`, `kr_eco_num`, `kr_eco_path`, `effec_date`, `expec_date`, `h_apply`, `status2`, `last_stock`, `first_release_date`, `img_qc`, `rm`, `dwg_pn`, `dwg_path`, `last_stock_date`, `ket`, `img_meeting`, `aproval1`, `aproval2`, `aproval3`, `aproval4`, `aproval5`, `aproval6`, `aproval7`, `u_update`, `date_update`) VALUES
+(1, 'Admin', 'IT', '2026-01-10 10:33:41', 'COMPLETE', 'ACQ1', 'ACQ2', 'ACQ3', 'ACQ4', 'BACK COVER', 'EDLM5003125', 'EDLM5003125.html', 'EDLM5003126', 'EDLM5003126.html', '2026-01-09', '2026-01-10', 'RUNNING CHANGE', 'On Progress', 20, '2026-01-06', 'MAPPING.xlsx', 'MAZ67571022', 'MAZ67571022', 'MAZ67571022_-_2D_V1_8_(OLED_A2).pdf', '2026-01-10', 'ok', 'ECO_관리_프로그램_update__Ver04.pptx', '', '', '', '', '', '', '', 'Kim j', '2026-01-10 04:43:30');
 
 -- --------------------------------------------------------
 
@@ -165,15 +167,17 @@ CREATE TABLE `tabel_material` (
   `effective_date` date DEFAULT NULL,
   `exhaust_date` date DEFAULT NULL,
   `shipping_available` varchar(20) DEFAULT NULL,
-  `issue` varchar(255) DEFAULT NULL
+  `issue` varchar(255) DEFAULT NULL,
+  `u_update` varchar(150) NOT NULL,
+  `date_update` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tabel_material`
 --
 
-INSERT INTO `tabel_material` (`id`, `id_eco`, `material_no`, `current_stock`, `effective_date`, `exhaust_date`, `shipping_available`, `issue`) VALUES
-(1, 1, 'MAZ67571022', 5, '2026-01-09', '2026-01-10', 'Material Empty', NULL);
+INSERT INTO `tabel_material` (`id`, `id_eco`, `material_no`, `current_stock`, `effective_date`, `exhaust_date`, `shipping_available`, `issue`, `u_update`, `date_update`) VALUES
+(1, 1, 'MAZ67571022', 20, '2026-01-09', '2026-01-10', 'Material Empty', NULL, 'Kim j', '2026-01-10 04:43:30');
 
 -- --------------------------------------------------------
 
