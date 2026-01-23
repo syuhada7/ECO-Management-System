@@ -22,12 +22,11 @@
             <table id="example1" class="table table-bordered table-striped">
                 <thead>
                     <th></th>
-                    <th>Departement</th>
+                    <th>Department</th>
                     <th>Registrations Date</th>
                     <th>Meeting Report</th>
                     <th>IN ECO</th>
                     <th>KR ECO</th>
-                    <th>Model</th>
                     <th>P/N Name</th>
                     <th>Registrant</th>
                     <th>Effective Date</th>
@@ -35,8 +34,7 @@
                     <th>Final Status</th>
                     <th>First Release Date</th>
                     <th>Drawing P/N</th>
-                    <th>Related Materials</th>
-                    <th>Last Stock</th>
+                    <th>Details ECO</th>
                     <th>Views Approval</th>
                 </thead>
                 <tbody>
@@ -72,15 +70,6 @@
                                     : ($data->kr_eco_num ?: "—")
                                 ?>
                             </td>
-                            <td>
-                                <?= $data->model_pn ?>
-                                <br>
-                                <?= $data->model_pn2 ?>
-                                <br>
-                                <?= $data->model_pn3 ?>
-                                <br>
-                                <?= $data->model_pn4 ?>
-                            </td>
                             <td style="background-color: <?= empty($data->pn_name) ? 'red' : '' ?>">
                                 <?= !empty($data->pn_name) ? $data->pn_name : '' ?>
                             </td>
@@ -97,12 +86,12 @@
                             <td style="background-color: <?= empty($data->first_release_datee) ? 'red' : '' ?>">
                                 <a href="<?= site_url('eco/inspection/' . $data->id_eco) ?>"><?= $data->first_release_date ?></a>
                             </td>
-                            <td><a href="<?= site_url('uploads/eco_file/' . rawurlencode($data->dwg_path)) ?>" target="_blank"><?= $data->dwg_pn ?></a></td>
-                            <td style="background-color: <?= empty($data->last_stock) ? '' : 'red' ?>">
-                                <a href="<?= site_url('eco/v_list/' . $data->id_eco . '/' . $data->rm); ?>">
-                                    <?= $data->rm ?></a>
+                            <td><?= $data->dwg_pn ?></td>
+                            <td>
+                                <input type="checkbox"
+                                    class="eco-detail-checkbox"
+                                    value="<?= $data->id_eco ?>">
                             </td>
-                            <td><?= $data->last_stock ?></td>
                             <?php
                             $approvals = [
                                 $data->aproval1,
@@ -131,5 +120,52 @@
             </table>
         </div>
     </div>
+    <div class="box box-info box2" style="display:none;">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-info-circle"></i> Detail ECO
+            </h3>
+        </div>
+        <div class="box-body" id="ecoDetailContent">
+            <!-- Detail akan muncul di sini -->
+        </div>
+    </div>
 </section>
 <!-- /.content -->
+<script>
+    $(document).ready(function() {
+
+        $('.eco-detail-checkbox').on('change', function() {
+
+            // jika checkbox dicentang
+            if ($(this).is(':checked')) {
+
+                // uncheck checkbox lain (opsional)
+                $('.eco-detail-checkbox').not(this).prop('checked', false);
+
+                let id_eco = $(this).val();
+
+                $.ajax({
+                    url: "<?= site_url('eco/detail_ajax') ?>",
+                    type: "POST",
+                    data: {
+                        id_eco: id_eco
+                    },
+                    dataType: "html",
+                    success: function(response) {
+                        $('.box2').slideDown();
+                        $('#ecoDetailContent').html(response);
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data detail');
+                    }
+                });
+
+            } else {
+                $('.box2').slideUp();
+                $('#ecoDetailContent').html('');
+            }
+        });
+
+    });
+</script>

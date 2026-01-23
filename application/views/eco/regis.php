@@ -53,51 +53,81 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <label>Model</label>
-                            <table>
-                                <tr>
-                                    <td style="padding-right:20px"><input type="text" name="model_pn" class="form-control"></td>
-                                    <td style="padding-right:20px"><input type="text" name="model_pn2" class="form-control"></td>
-                                    <td style="padding-right:20px"><input type="text" name="model_pn3" class="form-control"></td>
-                                    <td style="padding-right:20px"><input type="text" name="model_pn4" class="form-control"></td>
-                                </tr>
-                            </table>
+                            <div id="model_wrapper">
+                                <div class="input-group mb-1">
+                                    <input type="text" name="model_pn[]" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success add-model">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <label>Product name</label>
                             <input type="text" name="pn_name" class="form-control">
                         </div>
+                        <div class="col-lg-4">
+                            <label>Part Number</label>
+                            <div id="pn_wrapper">
+                                <div class="input-group mb-1">
+                                    <input type="text" name="pn_number[]" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success add-pn">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-lg-4">
-                            <label>Current stock</label>
-                            <input type="text" name="cr_stock" class="form-control">
-                        </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <label>Effective date</label>
                             <input type="date" name="efect_date" class="form-control">
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <label>Expected exhaustion date</label>
                             <input type="date" name="expec_date" value="" class="form-control">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <label>How to apply</label>
                             <input type="text" name="h-apply" class="form-control">
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <label>Drawing P/N</label>
                             <input type="text" name="dwg_pn" class="form-control">
-                            <br>
-                            <input type="file" name="attachment3" required>
-                            <br>
                         </div>
-                        <div class="col-lg-4">
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-6">
                             <label>Related Sub Materials</label>
-                            <input type="text" name="rm" class="form-control">
+                            <div id="rm_wrapper">
+                                <div class="input-group mb-1">
+                                    <input type="text" name="rm[]" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success add-rm">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Current stock</label>
+                            <div id="stock_wrapper">
+                                <div class="input-group mb-1">
+                                    <input type="text" name="cr_stock[]" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success add-stock">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -117,3 +147,43 @@
         </div>
     </div>
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        function addField(wrapper, inputName) {
+            var html = `
+        <div class="input-group mb-1">
+            <input type="text" name="` + inputName + `[]" class="form-control">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-danger remove-field">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </span>
+        </div>`;
+            $(wrapper).append(html);
+        }
+
+        $('.add-model').click(function() {
+            addField('#model_wrapper', 'model_pn');
+        });
+
+        $('.add-pn').click(function() {
+            addField('#pn_wrapper', 'pn_number');
+        });
+
+        $('.add-rm').click(function() {
+            addField('#rm_wrapper', 'rm');
+        });
+
+        $('.add-stock').click(function() {
+            addField('#stock_wrapper', 'cr_stock');
+        });
+
+        $(document).on('click', '.remove-field', function() {
+            $(this).closest('.input-group').remove();
+        });
+
+    });
+</script>

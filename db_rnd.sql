@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 10, 2026 at 04:48 AM
+-- Generation Time: Jan 23, 2026 at 03:43 AM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -21,19 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_rnd`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bom`
---
-
-CREATE TABLE `bom` (
-  `id_bom` int(11) NOT NULL,
-  `part_no` varchar(150) NOT NULL,
-  `part_name` varchar(150) NOT NULL,
-  `sub_part` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -56,12 +43,22 @@ CREATE TABLE `delivery_schedule` (
   `regis_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `delivery_schedule`
+-- Table structure for table `detail_eco`
 --
 
-INSERT INTO `delivery_schedule` (`id`, `id_eco`, `material_no`, `delivery_schedule`, `previous_inventory`, `quantity_shipped`, `current_stock`, `shipped_wio`, `note`, `regis`, `dept`, `regis_date`) VALUES
-(1, 1, 'MAZ67571022', '2026-01-17', 25, 20, 20, 'DJK2020', '', 'Admin', '', '2026-01-10 03:43:30');
+CREATE TABLE `detail_eco` (
+  `id_detail` int(11) NOT NULL,
+  `id_eco` int(11) NOT NULL,
+  `model_pn` varchar(225) NOT NULL,
+  `pn_number` varchar(225) NOT NULL,
+  `rm` varchar(225) NOT NULL,
+  `cr_stock` int(11) NOT NULL,
+  `date_regis` datetime NOT NULL,
+  `date_update` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -75,10 +72,6 @@ CREATE TABLE `eco` (
   `dept` varchar(15) NOT NULL,
   `regis_date` datetime NOT NULL DEFAULT current_timestamp(),
   `status1` varchar(15) NOT NULL,
-  `model_pn` varchar(50) NOT NULL,
-  `model_pn2` varchar(50) NOT NULL,
-  `model_pn3` varchar(50) NOT NULL,
-  `model_pn4` varchar(50) NOT NULL,
   `pn_name` varchar(50) NOT NULL,
   `in_eco_num` varchar(50) NOT NULL,
   `in_eco_path` varchar(100) NOT NULL,
@@ -88,12 +81,9 @@ CREATE TABLE `eco` (
   `expec_date` date NOT NULL,
   `h_apply` varchar(50) NOT NULL,
   `status2` varchar(15) NOT NULL,
-  `last_stock` int(11) NOT NULL,
   `first_release_date` date NOT NULL,
   `img_qc` varchar(150) NOT NULL,
-  `rm` varchar(100) NOT NULL,
   `dwg_pn` varchar(100) NOT NULL,
-  `dwg_path` varchar(100) NOT NULL,
   `last_stock_date` date NOT NULL,
   `ket` varchar(150) NOT NULL,
   `img_meeting` varchar(50) NOT NULL,
@@ -107,13 +97,6 @@ CREATE TABLE `eco` (
   `u_update` varchar(150) NOT NULL,
   `date_update` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `eco`
---
-
-INSERT INTO `eco` (`id_eco`, `register`, `dept`, `regis_date`, `status1`, `model_pn`, `model_pn2`, `model_pn3`, `model_pn4`, `pn_name`, `in_eco_num`, `in_eco_path`, `kr_eco_num`, `kr_eco_path`, `effec_date`, `expec_date`, `h_apply`, `status2`, `last_stock`, `first_release_date`, `img_qc`, `rm`, `dwg_pn`, `dwg_path`, `last_stock_date`, `ket`, `img_meeting`, `aproval1`, `aproval2`, `aproval3`, `aproval4`, `aproval5`, `aproval6`, `aproval7`, `u_update`, `date_update`) VALUES
-(1, 'Admin', 'IT', '2026-01-10 10:33:41', 'COMPLETE', 'ACQ1', 'ACQ2', 'ACQ3', 'ACQ4', 'BACK COVER', 'EDLM5003125', 'EDLM5003125.html', 'EDLM5003126', 'EDLM5003126.html', '2026-01-09', '2026-01-10', 'RUNNING CHANGE', 'On Progress', 20, '2026-01-06', 'MAPPING.xlsx', 'MAZ67571022', 'MAZ67571022', 'MAZ67571022_-_2D_V1_8_(OLED_A2).pdf', '2026-01-10', 'ok', 'ECO_관리_프로그램_update__Ver04.pptx', '', '', '', '', '', '', '', 'Kim j', '2026-01-10 04:43:30');
 
 -- --------------------------------------------------------
 
@@ -130,14 +113,6 @@ CREATE TABLE `f_date` (
   `date_1` date NOT NULL DEFAULT current_timestamp(),
   `date_created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `f_date`
---
-
-INSERT INTO `f_date` (`id_fdate`, `id_eco`, `username`, `depart`, `file1`, `date_1`, `date_created`) VALUES
-(1, 1, 'Admin', 'IT', 'MAP-HDI.xlsx', '2026-01-05', '2026-01-07 00:10:48'),
-(2, 1, 'Admin', 'IT', 'MAPPING.xlsx', '2026-01-06', '2026-01-07 00:11:19');
 
 -- --------------------------------------------------------
 
@@ -171,13 +146,6 @@ CREATE TABLE `tabel_material` (
   `u_update` varchar(150) NOT NULL,
   `date_update` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tabel_material`
---
-
-INSERT INTO `tabel_material` (`id`, `id_eco`, `material_no`, `current_stock`, `effective_date`, `exhaust_date`, `shipping_available`, `issue`, `u_update`, `date_update`) VALUES
-(1, 1, 'MAZ67571022', 20, '2026-01-09', '2026-01-10', 'Material Empty', NULL, 'Kim j', '2026-01-10 04:43:30');
 
 -- --------------------------------------------------------
 
@@ -217,16 +185,16 @@ INSERT INTO `user` (`id_user`, `nik`, `nama`, `password`, `level`, `image`, `dep
 --
 
 --
--- Indexes for table `bom`
---
-ALTER TABLE `bom`
-  ADD PRIMARY KEY (`id_bom`);
-
---
 -- Indexes for table `delivery_schedule`
 --
 ALTER TABLE `delivery_schedule`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `detail_eco`
+--
+ALTER TABLE `detail_eco`
+  ADD PRIMARY KEY (`id_detail`);
 
 --
 -- Indexes for table `eco`
@@ -263,28 +231,28 @@ ALTER TABLE `user`
 --
 
 --
--- AUTO_INCREMENT for table `bom`
---
-ALTER TABLE `bom`
-  MODIFY `id_bom` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `delivery_schedule`
 --
 ALTER TABLE `delivery_schedule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `detail_eco`
+--
+ALTER TABLE `detail_eco`
+  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `eco`
 --
 ALTER TABLE `eco`
-  MODIFY `id_eco` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_eco` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `f_date`
 --
 ALTER TABLE `f_date`
-  MODIFY `id_fdate` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_fdate` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `komentar`
@@ -296,7 +264,7 @@ ALTER TABLE `komentar`
 -- AUTO_INCREMENT for table `tabel_material`
 --
 ALTER TABLE `tabel_material`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user`

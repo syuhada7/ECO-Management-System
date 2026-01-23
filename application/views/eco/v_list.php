@@ -37,41 +37,43 @@
                     <?php
                     $no = 1;
                     foreach ($row->result() as $key => $data) :
+                        foreach ($row2->result() as $key => $m) :
                     ?>
-                        <tr>
-                            <td><?= $no++; ?></td>
-                            <td><?= $data->regis_date ?></td>
-                            <td style="background-color: 
+                            <tr>
+                                <td><?= $no++; ?></td>
+                                <td><?= $data->regis_date ?></td>
+                                <td style="background-color: 
                 <?=
-                        (empty($data->in_eco_num) && empty($data->in_eco_path)) ? 'red' : ((empty($data->in_eco_num) || empty($data->in_eco_path)) ? 'yellow' : 'transparent')
+                            (empty($data->in_eco_num) && empty($data->in_eco_path)) ? 'red' : ((empty($data->in_eco_num) || empty($data->in_eco_path)) ? 'yellow' : 'transparent')
                 ?>">
-                                <?= !empty($data->in_eco_path)
-                                    ? '<a href="' . site_url('uploads/eco_file/' . rawurlencode($data->in_eco_path)) . '" target="_blank">' . ($data->in_eco_num ?: "—") . '</a>'
-                                    : ($data->in_eco_num ?: "—")
-                                ?>
-                            </td>
-                            <td style="background-color: 
+                                    <?= !empty($data->in_eco_path)
+                                        ? '<a href="' . site_url('uploads/eco_file/' . rawurlencode($data->in_eco_path)) . '" target="_blank">' . ($data->in_eco_num ?: "—") . '</a>'
+                                        : ($data->in_eco_num ?: "—")
+                                    ?>
+                                </td>
+                                <td style="background-color: 
                 <?=
-                        (empty($data->kr_eco_num) && empty($data->kr_eco_path)) ? 'red' : ((empty($data->kr_eco_num) || empty($data->kr_eco_path)) ? 'yellow' : 'transparent')
+                            (empty($data->kr_eco_num) && empty($data->kr_eco_path)) ? 'red' : ((empty($data->kr_eco_num) || empty($data->kr_eco_path)) ? 'yellow' : 'transparent')
                 ?>">
-                                <?= !empty($data->kr_eco_path)
-                                    ? '<a href="' . site_url('uploads/eco_file/' . rawurlencode($data->kr_eco_path)) . '" target="_blank">' . ($data->kr_eco_num ?: "—") . '</a>'
-                                    : ($data->kr_eco_num ?: "—")
-                                ?>
-                            </td>
-                            <td><?= $data->rm ?></td>
-                            <td><?= $data->register ?></td>
-                            <td style="background-color:
+                                    <?= !empty($data->kr_eco_path)
+                                        ? '<a href="' . site_url('uploads/eco_file/' . rawurlencode($data->kr_eco_path)) . '" target="_blank">' . ($data->kr_eco_num ?: "—") . '</a>'
+                                        : ($data->kr_eco_num ?: "—")
+                                    ?>
+                                </td>
+                                <td><?= $m->rm ?></td>
+                                <td><?= $data->register ?></td>
+                                <td style="background-color:
                 <?php
-                        $diff = (strtotime($data->effec_date) - time()) / 86400;
-                        echo ($diff < 0) ? 'red' : (($diff <= 10) ? 'yellow' : '');
+                            $diff = (strtotime($data->effec_date) - time()) / 86400;
+                            echo ($diff < 0) ? 'red' : (($diff <= 10) ? 'yellow' : '');
                 ?>">
-                                <?= $data->effec_date ?>
-                            </td>
-                            <td><?= $data->h_apply ?></td>
-                            <td><?= $data->status2 ?></td>
-                            <td><?= $data->last_stock_date ?></td>
-                        </tr>
+                                    <?= $data->effec_date ?>
+                                </td>
+                                <td><?= $data->h_apply ?></td>
+                                <td><?= $data->status2 ?></td>
+                                <td><?= $data->last_stock_date ?></td>
+                            </tr>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
                 </tbody>
             </table>
@@ -89,22 +91,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($row2->result() as $key => $m) : ?>
-                        <tr>
-                            <td class="highlight" data-id="<?= $m->id_eco ?>" data-pn="<?= $m->material_no ?>"><?= $m->material_no ?></td>
-                            <td class="current-stock"><?= $m->current_stock ?></td>
-                            <td><?= date('y.m.d', strtotime($data->effec_date)) ?></td>
-                            <td><?= date('y.m.d', strtotime($data->expec_date)) ?></td>
-                            <td><?= $m->shipping_available ?></td>
-                            <td><?= $m->issue ?></td>
-                        </tr>
+                    <?php
+                    foreach ($row->result() as $key => $data) :
+                        foreach ($row2->result() as $key => $m) :
+                            foreach ($row3->result() as $key => $d) :
+                    ?>
+                                <tr>
+                                    <td class="highlight" data-id="<?= $m->id_eco ?>" data-pn="<?= $m->rm ?>"><?= $m->rm ?></td>
+                                    <td class="current-stock"><?= $m->cr_stock ?></td>
+                                    <td><?= date('y.m.d', strtotime($data->effec_date)) ?></td>
+                                    <td><?= date('y.m.d', strtotime($data->expec_date)) ?></td>
+                                    <td><?= $d->shipping_available ?></td>
+                                    <td><?= $d->issue ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
                 </tbody>
             </table>
             <br>
             <div class="pull-right">
                 <div class="btn-group">
-                    <a href="<?= site_url('eco/delivery/' . $data->id_eco . '/' . $data->rm) ?>" class="btn btn-default" id="btnCreate"><i class="fa fa-plus"> Created</i></a>
+                    <a href="<?= site_url('eco/delivery/' . $data->id_eco . '/' . $m->rm) ?>" class="btn btn-default" id="btnCreate"><i class="fa fa-plus"> Created</i></a>
                 </div>
             </div>
             <h3>Delivery Schedule</h3>

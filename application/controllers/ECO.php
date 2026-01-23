@@ -18,6 +18,12 @@ class ECO extends CI_Controller
         $data['row'] = $this->Eco_model->get();
         $this->template->load('templates/template', 'eco/index', $data);
     }
+    public function detail_ajax()
+    {
+        $id = $this->input->post('id_eco');
+        $data['eco_rows'] = $this->Eco_model->get_detail($id);
+        $this->load->view('eco/detail_eco', $data);
+    }
     public function regis()
     {
         $data['next_id'] = $this->Eco_model->get_next_id();
@@ -55,8 +61,9 @@ class ECO extends CI_Controller
             return;
         }
 
-        $data['row'] = $this->Eco_model->get_rm($id, $rm);
-        $data['row2'] = $this->Delivery_model->get_rm($id, $rm);
+        $data['row'] = $this->Eco_model->get($id);
+        $data['row2'] = $this->Eco_model->get_rm($id, $rm);
+        $data['row3'] = $this->Delivery_model->get_rm($id, $rm);
         $data['materials'] = $this->Delivery_model->get_all_materials();
         $this->template->load('templates/template', 'eco/v_list', $data);
     }
@@ -85,14 +92,16 @@ class ECO extends CI_Controller
 
     public function save()
     {
-        // Konfigurasi upload
+        // ================= UPLOAD CONFIG =================
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'html|pptx|xlsx|pdf';
-        $config['max_size']      = 30720; // 15MB
+        $config['allowed_types'] = 'html|pptx|xlsx|pdf|jpeg|jpg|png';
+        $config['max_size']      = 51200;
 
         if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, true);
         }
+
+        $this->load->library('upload', $config);
 
         // Upload file 1
         $this->upload->initialize($config);
@@ -101,8 +110,7 @@ class ECO extends CI_Controller
             $file1_data = $this->upload->data();
             $file1 = $file1_data['file_name'];
         }
-
-        // Upload file 2
+        // Upload file 2 
         $this->upload->initialize($config);
         $file2 = "";
         if ($this->upload->do_upload('attachment2')) {
@@ -110,54 +118,70 @@ class ECO extends CI_Controller
             $file2 = $file2_data['file_name'];
         }
 
-        // Upload file 3
-        $this->upload->initialize($config);
-        $file3 = "";
-        if ($this->upload->do_upload('attachment3')) {
-            $file3_data = $this->upload->data();
-            $file3 = $file3_data['file_name'];
-        }
-
-        // Ambil input dari form
+        // ================= MAIN ECO TABLE =================
         $data = [
             'dept'            => $this->input->post('dept'),
             'register'        => $this->input->post('regis_id'),
-            'model_pn'        => $this->input->post('model_pn'),
-            'model_pn2'       => $this->input->post('model_pn2'),
-            'model_pn3'       => $this->input->post('model_pn3'),
-            'model_pn4'       => $this->input->post('model_pn4'),
             'pn_name'         => $this->input->post('pn_name'),
-            'status1'         => "On Schedule",
-            'status2'         => "On Progress",
+            'status1'         => 'On Schedule',
+            'status2'         => 'On Progress',
             'in_eco_num'      => $this->input->post('in_eco_num'),
             'in_eco_path'     => $file1,
             'kr_eco_num'      => $this->input->post('kr_eco_num'),
             'kr_eco_path'     => $file2,
-            'last_stock'      => $this->input->post('cr_stock'),
             'effec_date'      => $this->input->post('efect_date'),
             'expec_date'      => $this->input->post('expec_date'),
             'h_apply'         => $this->input->post('h-apply'),
             'dwg_pn'          => $this->input->post('dwg_pn'),
-            'dwg_path'        => $file3,
-            'rm'              => $this->input->post('rm'),
             'last_stock_date' => $this->input->post('regis_date'),
             'ket'             => $this->input->post('ket')
         ];
 
-        // update table materials
-        $data2 = [
-            'id_eco'                => $this->input->post('id_eco'),
-            'current_stock'         => $this->input->post('cr_stock'),
-            'effective_date'        => $this->input->post('efect_date'),
-            'exhaust_date'          => $this->input->post('expec_date'),
-            'material_no'           => $this->input->post('rm'),
-            'shipping_available'    => "Possible"
-        ];
-
         $this->Eco_model->insert($data);
-        $this->db->insert('tabel_material', $data2);
-        redirect('ECO');
+
+        // ================= DETAIL ECO (MULTI ROW) =================
+        $post = $this->input->post();
+
+        foreach ($post['model_pn'] as $i => $model) {
+
+            // skip jika semua kosong
+            if (
+                empty($model) &&
+                empty($post['pn_number'][$i]) &&
+                empty($post['rm'][$i]) &&
+                empty($post['cr_stock'][$i])
+            ) {
+                continue;
+            }
+
+            $data_detail = [
+                'id_eco'        => $post['id_eco'],
+                'model_pn'      => $model,
+                'pn_number'     => $post['pn_number'][$i] ?? null,
+                'rm'            => $post['rm'][$i] ?? null,
+                'cr_stock'      => $post['cr_stock'][$i] ?? 0,
+            ];
+
+            $this->db->insert('detail_eco', $data_detail);
+        }
+
+
+        // ================= MATERIAL TABLE (MULTI ROW) =================
+        foreach ($post['rm'] as $i => $rm) {
+            $data_material = [
+                'id_eco'             => $post['id_eco'],
+                'material_no'        => $rm,
+                'current_stock'      => $post['cr_stock'][$i] ?? 0,
+                'effective_date'     => $post['efect_date'],
+                'exhaust_date'       => $post['expec_date'],
+                'shipping_available' => 'Possible'
+            ];
+            $this->db->insert('tabel_material', $data_material);
+        }
+
+        redirect('eco');
     }
+
 
     public function save_delivery()
     {
@@ -183,6 +207,7 @@ class ECO extends CI_Controller
         ];
         $this->Delivery_model->insert($data);
         $this->Eco_model->update_delivery();
+        $this->Eco_model->update_stock();
         $this->Delivery_model->update_delivery();
         redirect('eco/v_list/' . $id . '/' . $rm);
     }
@@ -192,8 +217,8 @@ class ECO extends CI_Controller
         $id = $this->input->post('id_eco');
         // Konfigurasi upload
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'pdf|xlsx|xls|pptx|ppt';
-        $config['max_size']      = 30720; // 15MB
+        $config['allowed_types'] = 'pdf|xlsx|xls|pptx|ppt|jpeg|jpg|png';
+        $config['max_size']      = 51200; // 25MB
 
         if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, true);
@@ -219,8 +244,8 @@ class ECO extends CI_Controller
         $id = $this->input->post('id_eco');
         // Konfigurasi upload
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'pdf|xlsx|xls|pptx|ppt';
-        $config['max_size']      = 30720; // 15MB
+        $config['allowed_types'] = 'pdf|xlsx|xls|pptx|ppt|jpeg|jpg|png';
+        $config['max_size']      = 51200; // 25MB
 
         if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, true);
@@ -332,76 +357,119 @@ class ECO extends CI_Controller
         echo json_encode($data);
     }
 
-    //edit register
     public function edit($id)
     {
-        $data['eco'] = $this->Eco_model->get($id)->row();
+        // ambil data eco utama
+        $eco = $this->Eco_model->get($id)->row();
+
+        if (!$eco) {
+            echo "<script>alert('Data tidak ditemukan');</script>";
+            redirect('eco');
+        }
+
+        // ambil detail eco (multi row)
+        $detail = $this->Eco_model->get_detail($id);
+
+        $data = [
+            'row'        => $eco,
+            'detail_eco' => $detail
+        ];
+
         $this->template->load('templates/template', 'eco/update', $data);
     }
 
+
     public function update()
     {
-        $post = $this->input->post(null, TRUE);
-        $id   = $post['id_eco'];
+        $id = $this->input->post('id_eco');
 
-        // ambil data lama
-        $eco = $this->Eco_model->get($id)->row();
-
+        // ================= UPLOAD CONFIG =================
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'html|pptx|xlsx|pdf';
-        $config['max_size']      = 30720; // 15MB
+        $config['allowed_types'] = 'html|pptx|xlsx|pdf|jpeg|jpg|png';
+        $config['max_size']      = 51200;
 
-        $this->load->library('upload');
+        $this->load->library('upload', $config);
 
-        /* =========================
-       ATTACHMENT 1
-    ========================= */
+        // ================= GET OLD DATA =================
+        $old = $this->Eco_model->get($id)->row();
+
+        // ================= FILE 1 =================
+        $file1 = $old->in_eco_path;
         if (!empty($_FILES['attachment1']['name'])) {
-            $this->upload->initialize($config);
             if ($this->upload->do_upload('attachment1')) {
-
-                // hapus file lama
-                if ($eco->attachment1 && file_exists('./uploads/eco/' . $eco->attachment1)) {
-                    unlink('./uploads/eco/' . $eco->attachment1);
-                }
-
-                $post['attachment1'] = $this->upload->data('file_name');
+                $file1 = $this->upload->data('file_name');
             }
         }
 
-        /* =========================
-       ATTACHMENT 2
-    ========================= */
+        // ================= FILE 2 =================
+        $file2 = $old->kr_eco_path;
         if (!empty($_FILES['attachment2']['name'])) {
             $this->upload->initialize($config);
             if ($this->upload->do_upload('attachment2')) {
-
-                if ($eco->attachment2 && file_exists('./uploads/eco/' . $eco->attachment2)) {
-                    unlink('./uploads/eco/' . $eco->attachment2);
-                }
-
-                $post['attachment2'] = $this->upload->data('file_name');
+                $file2 = $this->upload->data('file_name');
             }
         }
 
-        /* =========================
-       ATTACHMENT 3
-    ========================= */
-        if (!empty($_FILES['attachment3']['name'])) {
-            $this->upload->initialize($config);
-            if ($this->upload->do_upload('attachment3')) {
+        // ================= UPDATE ECO =================
+        $data = [
+            'pn_name'     => $this->input->post('pn_name'),
+            'in_eco_num'  => $this->input->post('in_eco_num'),
+            'in_eco_path' => $file1,
+            'kr_eco_num'  => $this->input->post('kr_eco_num'),
+            'kr_eco_path' => $file2,
+            'effec_date'  => $this->input->post('efect_date'),
+            'expec_date'  => $this->input->post('expec_date'),
+            'h_apply'     => $this->input->post('h-apply'),
+            'dwg_pn'      => $this->input->post('dwg_pn'),
+            'ket'         => $this->input->post('ket')
+        ];
 
-                if ($eco->attachment3 && file_exists('./uploads/eco/' . $eco->attachment3)) {
-                    unlink('./uploads/eco/' . $eco->attachment3);
-                }
+        $this->Eco_model->update($id, $data);
 
-                $post['attachment3'] = $this->upload->data('file_name');
+        // ================= UPDATE DETAIL ECO =================
+        $post = $this->input->post();
+
+        // hapus detail lama
+        $this->db->where('id_eco', $id)->delete('detail_eco');
+
+        // insert ulang
+        foreach ($post['model_pn'] as $i => $model) {
+
+            if (
+                empty($model) &&
+                empty($post['pn_number'][$i]) &&
+                empty($post['rm'][$i]) &&
+                empty($post['cr_stock'][$i])
+            ) {
+                continue;
             }
+
+            $this->db->insert('detail_eco', [
+                'id_eco'        => $id,
+                'model_pn'      => $model,
+                'pn_number'     => $post['pn_number'][$i] ?? null,
+                'rm'            => $post['rm'][$i] ?? null,
+                'cr_stock'      => $post['cr_stock'][$i] ?? 0,
+                'date_update'   => date('Y-m-d H:i:s'),
+            ]);
         }
 
-        $this->Eco_model->update();
+        // ================= UPDATE MATERIAL TABLE =================
+        $this->db->where('id_eco', $id)->delete('tabel_material');
 
-        $this->session->set_flashdata('success', 'Data ECO success update');
-        redirect('ECO');
+        foreach ($post['rm'] as $i => $rm) {
+            $this->db->insert('tabel_material', [
+                'id_eco'             => $id,
+                'material_no'        => $rm,
+                'current_stock'      => $post['cr_stock'][$i] ?? 0,
+                'effective_date'     => $post['efect_date'],
+                'exhaust_date'       => $post['expec_date'],
+                'date_update'        => date('Y-m-d H:i:s'),
+                'u_update'           => $this->input->post('user_u'),
+                'shipping_available' => 'Possible'
+            ]);
+        }
+
+        redirect('eco');
     }
 }

@@ -15,9 +15,27 @@ class ECO_Public extends CI_Controller
         $this->template->load('templates/template_public', 'public_eco/index', $data);
     }
 
-    public function delivery($id)
+    public function detail_ajax()
     {
-        $data['row'] = $this->Delivery_model->get_rm($id);
+        $id = $this->input->post('id_eco');
+        $data['eco_rows'] = $this->Eco_model->get_detail($id);
+        $this->load->view('eco/detail_eco', $data);
+    }
+
+    public function delivery($id = null, $rm = null)
+    {
+        if (!$id || !$rm) {
+            echo json_encode(['error' => 'Parameter tidak lengkap']);
+            return;
+        }
+
+        // Validasi material_id dan material_no cocok
+        $material = $this->Eco_model->get_rm($id, $rm);
+        if (!$material) {
+            echo json_encode(['error' => 'Material tidak ditemukan']);
+            return;
+        }
+        $data['row'] = $this->Delivery_model->get_rm($id, $rm);
         $this->template->load('templates/template_public', 'public_eco/delivery', $data);
     }
 
@@ -36,8 +54,9 @@ class ECO_Public extends CI_Controller
             return;
         }
 
-        $data['row'] = $this->Eco_model->get_rm($id, $rm);
-        $data['row2'] = $this->Delivery_model->get_rm($id, $rm);
+        $data['row'] = $this->Eco_model->get($id);
+        $data['row2'] = $this->Eco_model->get_rm($id, $rm);
+        $data['row3'] = $this->Delivery_model->get_rm($id, $rm);
         $data['materials'] = $this->Delivery_model->get_all_materials();
         $this->template->load('templates/template_public', 'public_eco/v_list', $data);
     }
