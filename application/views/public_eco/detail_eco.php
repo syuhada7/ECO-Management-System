@@ -20,7 +20,7 @@
                 </td>
                 <td><?= $row->pn_number ?></td>
                 <td>
-                    <a href="<?= site_url('eco/v_list/' . $row->id_eco) ?>">
+                    <a href="<?= site_url('eco_public/v_list/' . $row->id_eco) ?>">
                         <?= $row->rm ?>
                     </a>
                 </td>

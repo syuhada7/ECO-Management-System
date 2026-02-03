@@ -33,11 +33,10 @@ class Eco_model extends CI_Model
         return $result ? $result->id_eco + 1 : 1;
     }
 
-    public function get_rm($id, $rm)
+    public function get_rm($id)
     {
         $this->db->from('detail_eco');
         $this->db->where('id_eco', $id);
-        $this->db->where('rm', $rm);
         $query = $this->db->get();
         return $query;
     }

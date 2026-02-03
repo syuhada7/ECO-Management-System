@@ -88,31 +88,28 @@
                         <th>Expected exhaustion date</th>
                         <th>Shipping available</th>
                         <th>Issue</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    foreach ($row->result() as $key => $data) :
-                        foreach ($row2->result() as $key => $m) :
-                            foreach ($row3->result() as $key => $d) :
+                    foreach ($row3->result() as $key => $d) :
                     ?>
-                                <tr>
-                                    <td class="highlight" data-id="<?= $m->id_eco ?>" data-pn="<?= $m->rm ?>"><?= $m->rm ?></td>
-                                    <td class="current-stock"><?= $m->cr_stock ?></td>
-                                    <td><?= date('y.m.d', strtotime($data->effec_date)) ?></td>
-                                    <td><?= date('y.m.d', strtotime($data->expec_date)) ?></td>
-                                    <td><?= $d->shipping_available ?></td>
-                                    <td><?= $d->issue ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endforeach; ?>
+                        <tr>
+                            <td class="highlight" data-id="<?= $d->id_eco ?>" data-pn="<?= $d->material_no ?>"><?= $d->material_no ?></td>
+                            <td class="current-stock"><?= $d->current_stock ?></td>
+                            <td><?= date('y.m.d', strtotime($d->effective_date)) ?></td>
+                            <td><?= date('y.m.d', strtotime($d->exhaust_date)) ?></td>
+                            <td><?= $d->shipping_available ?></td>
+                            <td><?= $d->issue ?></td>
+                            <td><a href="<?= site_url('eco/delivery/' . $d->id_eco . '/' . $d->material_no) ?>" class="btn btn-default" id="btnCreate"><i class="fa fa-plus"> Created</i></a></td>
+                        </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
             <br>
             <div class="pull-right">
                 <div class="btn-group">
-                    <a href="<?= site_url('eco/delivery/' . $data->id_eco . '/' . $m->rm) ?>" class="btn btn-default" id="btnCreate"><i class="fa fa-plus"> Created</i></a>
                 </div>
             </div>
             <h3>Delivery Schedule</h3>

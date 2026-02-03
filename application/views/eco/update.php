@@ -62,16 +62,24 @@
                         <div class="col-lg-4">
                             <label>Model</label>
                             <div id="model_wrapper">
-                                <?php foreach ($detail_eco as $m): ?>
-                                    <div class="input-group mb-1">
-                                        <input type="text" name="model_pn[]" value="<?= $m->model_pn ?>" class="form-control">
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-danger remove-field">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </span>
-                                    </div>
-                                <?php endforeach; ?>
+                                <?php
+                                $model_unique = [];
+                                foreach ($detail_eco as $m) {
+                                    if (!in_array($m->model_pn, $model_unique)) {
+                                        $model_unique[] = $m->model_pn;
+                                ?>
+                                        <div class="input-group mb-1">
+                                            <input type="text" name="model_pn[]" value="<?= $m->model_pn ?>" class="form-control">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-danger remove-field">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                <?php
+                                    }
+                                }
+                                ?>
                                 <button type="button" class="btn btn-success btn-xs add-model">
                                     <i class="fa fa-plus"></i> Add
                                 </button>
@@ -84,16 +92,24 @@
                         <div class="col-lg-4">
                             <label>Part Number</label>
                             <div id="pn_wrapper">
-                                <?php foreach ($detail_eco as $m): ?>
-                                    <div class="input-group mb-1">
-                                        <input type="text" name="pn_number[]" value="<?= $m->pn_number ?>" class="form-control">
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-danger remove-field">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </span>
-                                    </div>
-                                <?php endforeach; ?>
+                                <?php
+                                $pn_unique = [];
+                                foreach ($detail_eco as $m) {
+                                    if (!in_array($m->pn_number, $pn_unique)) {
+                                        $pn_unique[] = $m->pn_number;
+                                ?>
+                                        <div class="input-group mb-1">
+                                            <input type="text" name="pn_number[]" value="<?= $m->pn_number ?>" class="form-control">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-danger remove-field">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                <?php
+                                    }
+                                }
+                                ?>
                                 <button type="button" class="btn btn-success btn-xs add-pn">
                                     <i class="fa fa-plus"></i> Add
                                 </button>

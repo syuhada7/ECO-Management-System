@@ -47,23 +47,23 @@ class ECO extends CI_Controller
     }
 
     // Halaman detail berdasarkan ID & Material
-    public function v_list($id = null, $rm = null)
+    public function v_list($id = null)
     {
-        if (!$id || !$rm) {
+        if (!$id) {
             echo json_encode(['error' => 'Parameter tidak lengkap']);
             return;
         }
 
         // Validasi material_id dan material_no cocok
-        $material = $this->Eco_model->get_rm($id, $rm);
+        $material = $this->Eco_model->get_rm($id);
         if (!$material) {
             echo json_encode(['error' => 'Material tidak ditemukan']);
             return;
         }
 
         $data['row'] = $this->Eco_model->get($id);
-        $data['row2'] = $this->Eco_model->get_rm($id, $rm);
-        $data['row3'] = $this->Delivery_model->get_rm($id, $rm);
+        $data['row2'] = $this->Eco_model->get_rm($id);
+        $data['row3'] = $this->Delivery_model->get_rm($id);
         $data['materials'] = $this->Delivery_model->get_all_materials();
         $this->template->load('templates/template', 'eco/v_list', $data);
     }
@@ -165,17 +165,29 @@ class ECO extends CI_Controller
             $this->db->insert('detail_eco', $data_detail);
         }
 
-
         // ================= MATERIAL TABLE (MULTI ROW) =================
         foreach ($post['rm'] as $i => $rm) {
+
+            $current_stock = $post['cr_stock'][$i] ?? 0;
+
+            // Tentukan status shipping
+            if ($current_stock < 1) {
+                $shipping_available = 'Material Empty';
+            } elseif ($current_stock <= 10) {
+                $shipping_available = 'Minim Stock';
+            } else {
+                $shipping_available = 'Possible';
+            }
+
             $data_material = [
                 'id_eco'             => $post['id_eco'],
                 'material_no'        => $rm,
-                'current_stock'      => $post['cr_stock'][$i] ?? 0,
+                'current_stock'      => $current_stock,
                 'effective_date'     => $post['efect_date'],
                 'exhaust_date'       => $post['expec_date'],
-                'shipping_available' => 'Possible'
+                'shipping_available' => $shipping_available
             ];
+
             $this->db->insert('tabel_material', $data_material);
         }
 
@@ -426,47 +438,106 @@ class ECO extends CI_Controller
 
         $this->Eco_model->update($id, $data);
 
-        // ================= UPDATE DETAIL ECO =================
+        // ================= UPSERT DETAIL ECO (SET STOCK + SYNC DELETE) =================
         $post = $this->input->post();
 
-        // hapus detail lama
-        $this->db->where('id_eco', $id)->delete('detail_eco');
+        $this->db->trans_start();
 
-        // insert ulang
-        foreach ($post['model_pn'] as $i => $model) {
+        // default model & pn
+        $default_model = $post['model_pn'][0] ?? '';
+        $default_pn    = $post['pn_number'][0] ?? '';
 
-            if (
-                empty($model) &&
-                empty($post['pn_number'][$i]) &&
-                empty($post['rm'][$i]) &&
-                empty($post['cr_stock'][$i])
-            ) {
-                continue;
+        // penampung rm yang masih valid
+        $rm_exist = [];
+
+        foreach ($post['rm'] as $i => $rm) {
+
+            $model_pn  = trim($post['model_pn'][$i] ?? '');
+            $pn_number = trim($post['pn_number'][$i] ?? '');
+            $rm        = trim($rm);
+            $cr_stock  = (int) ($post['cr_stock'][$i] ?? 0);
+
+            if ($model_pn === '') $model_pn = $default_model;
+            if ($pn_number === '') $pn_number = $default_pn;
+
+            if ($rm === '') continue;
+
+            // simpan RM valid
+            $rm_exist[] = $rm;
+
+            // cek existing
+            $existing = $this->db->where([
+                'id_eco'    => $id,
+                'model_pn'  => $model_pn,
+                'pn_number' => $pn_number,
+                'rm'        => $rm
+            ])->get('detail_eco')->row();
+
+            if ($existing) {
+
+                // UPDATE stock
+                $this->db->set('cr_stock', $cr_stock);
+                $this->db->set('date_update', date('Y-m-d H:i:s'));
+                $this->db->where('id_detail', $existing->id_detail);
+                $this->db->update('detail_eco');
+            } else {
+
+                // INSERT baru
+                $this->db->insert('detail_eco', [
+                    'id_eco'      => $id,
+                    'model_pn'    => $model_pn,
+                    'pn_number'   => $pn_number,
+                    'rm'          => $rm,
+                    'cr_stock'    => $cr_stock,
+                    'date_update' => date('Y-m-d H:i:s'),
+                ]);
             }
+        }
 
-            $this->db->insert('detail_eco', [
-                'id_eco'        => $id,
-                'model_pn'      => $model,
-                'pn_number'     => $post['pn_number'][$i] ?? null,
-                'rm'            => $post['rm'][$i] ?? null,
-                'cr_stock'      => $post['cr_stock'][$i] ?? 0,
-                'date_update'   => date('Y-m-d H:i:s'),
-            ]);
+        /*
+|--------------------------------------------------------------------------
+| DELETE RM YANG TIDAK ADA DI FORM
+|--------------------------------------------------------------------------
+*/
+        if (!empty($rm_exist)) {
+            $this->db->where('id_eco', $id);
+            $this->db->where('model_pn', $default_model);
+            $this->db->where('pn_number', $default_pn);
+            $this->db->where_not_in('rm', $rm_exist);
+            $this->db->delete('detail_eco');
+        }
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            log_message('error', 'Gagal sync detail ECO ID: ' . $id);
         }
 
         // ================= UPDATE MATERIAL TABLE =================
         $this->db->where('id_eco', $id)->delete('tabel_material');
 
         foreach ($post['rm'] as $i => $rm) {
+
+            $current_stock = $post['cr_stock'][$i] ?? 0;
+
+            // Tentukan status shipping
+            if ($current_stock < 1) {
+                $shipping_available = 'Material Empty';
+            } elseif ($current_stock <= 10) {
+                $shipping_available = 'Minim Stock';
+            } else {
+                $shipping_available = 'Possible';
+            }
+
             $this->db->insert('tabel_material', [
                 'id_eco'             => $id,
                 'material_no'        => $rm,
-                'current_stock'      => $post['cr_stock'][$i] ?? 0,
+                'current_stock'      => $current_stock,
                 'effective_date'     => $post['efect_date'],
                 'exhaust_date'       => $post['expec_date'],
                 'date_update'        => date('Y-m-d H:i:s'),
                 'u_update'           => $this->input->post('user_u'),
-                'shipping_available' => 'Possible'
+                'shipping_available' => $shipping_available
             ]);
         }
 

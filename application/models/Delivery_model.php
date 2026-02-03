@@ -14,11 +14,10 @@ class Delivery_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-    public function get_rm($id, $rm)
+    public function get_rm($id)
     {
         $this->db->from('tabel_material');
         $this->db->where('id_eco', $id);
-        $this->db->where('material_no', $rm);
         $query = $this->db->get();
         return $query;
     }
@@ -50,10 +49,12 @@ class Delivery_model extends CI_Model
         ];
 
         // Logika otomatis status shipping
-        if ($cr_stock === 0) {
+        if ($cr_stock < 1) {
             $data['shipping_available'] = 'Material Empty';
+        } elseif ($cr_stock <= 10) {
+            $data['shipping_available'] = 'Minim Stock';
         } else {
-            $data['shipping_available'] = 'possible';
+            $data['shipping_available'] = 'Possible';
         }
 
         // Lakukan update ke database
