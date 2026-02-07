@@ -78,9 +78,13 @@
                             </td>
                             <td><?= $data->h_apply ?></td>
                             <td><?= $data->status2 ?></td>
-                            <td style="background-color: <?= empty($data->first_release_datee) ? 'red' : '' ?>">
+                            <?php
+                            $isInvalidDate = empty($data->first_release_date) || $data->first_release_date === '0000-00-00';
+                            ?>
+                            <td style="background-color: <?= $isInvalidDate ? 'red' : '' ?>">
                                 <a href="<?= site_url('eco_public/inspection/' . $data->id_eco) ?>">
-                                    <?= $data->first_release_date  ?></a>
+                                    <?= $isInvalidDate ? '-' : $data->first_release_date ?>
+                                </a>
                             </td>
                             <td><?= $data->dwg_pn ?></td>
                             <td>

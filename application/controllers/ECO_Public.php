@@ -22,20 +22,20 @@ class ECO_Public extends CI_Controller
         $this->load->view('public_eco/detail_eco', $data);
     }
 
-    public function delivery($id = null, $rm = null)
+    public function delivery($id = null)
     {
-        if (!$id || !$rm) {
+        if (!$id) {
             echo json_encode(['error' => 'Parameter tidak lengkap']);
             return;
         }
 
         // Validasi material_id dan material_no cocok
-        $material = $this->Eco_model->get_rm($id, $rm);
+        $material = $this->Eco_model->get_rm($id);
         if (!$material) {
             echo json_encode(['error' => 'Material tidak ditemukan']);
             return;
         }
-        $data['row'] = $this->Delivery_model->get_rm($id, $rm);
+        $data['row'] = $this->Delivery_model->get_rm($id);
         $this->template->load('templates/template_public', 'public_eco/delivery', $data);
     }
 

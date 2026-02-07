@@ -29,20 +29,20 @@ class ECO extends CI_Controller
         $data['next_id'] = $this->Eco_model->get_next_id();
         $this->template->load('templates/template', 'eco/regis', $data);
     }
-    public function delivery($id = null, $rm = null)
+    public function delivery($rm = null)
     {
-        if (!$id || !$rm) {
+        if (!$rm) {
             echo json_encode(['error' => 'Parameter tidak lengkap']);
             return;
         }
 
         // Validasi material_id dan material_no cocok
-        $material = $this->Eco_model->get_rm($id, $rm);
+        $material = $this->Eco_model->get_drm($rm);
         if (!$material) {
             echo json_encode(['error' => 'Material tidak ditemukan']);
             return;
         }
-        $data['row'] = $this->Delivery_model->get_rm($id, $rm);
+        $data['row'] = $this->Delivery_model->get_drm($rm);
         $this->template->load('templates/template', 'eco/delivery', $data);
     }
 
@@ -94,7 +94,7 @@ class ECO extends CI_Controller
     {
         // ================= UPLOAD CONFIG =================
         $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'html|pptx|xlsx|pdf|jpeg|jpg|png';
+        $config['allowed_types'] = 'html|pdf|jpeg|jpg|png';
         $config['max_size']      = 51200;
 
         if (!is_dir($config['upload_path'])) {
@@ -133,7 +133,6 @@ class ECO extends CI_Controller
             'expec_date'      => $this->input->post('expec_date'),
             'h_apply'         => $this->input->post('h-apply'),
             'dwg_pn'          => $this->input->post('dwg_pn'),
-            'last_stock_date' => $this->input->post('regis_date'),
             'ket'             => $this->input->post('ket')
         ];
 
@@ -289,6 +288,63 @@ class ECO extends CI_Controller
         redirect('eco/inspection/' . $id);
     }
 
+    public function upload_f_ins()
+    {
+        $id_eco   = $this->input->post('id_eco');
+        $id_fdate = $this->input->post('id_fdate'); // hanya ada di update-only
+        $mode     = $this->input->post('mode');     // update_only / null
+
+        // ================= CONFIG UPLOAD =================
+        $config = [
+            'upload_path'   => './uploads/eco_file/',
+            'allowed_types' => 'pdf|xlsx|xls|pptx|ppt|jpeg|jpg|png',
+            'max_size'      => 51200,
+            'encrypt_name'  => TRUE
+        ];
+
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, true);
+        }
+
+        $this->load->library('upload');
+        $this->upload->initialize($config);
+
+        if (!$this->upload->do_upload('attachment1')) {
+            echo $this->upload->display_errors();
+            return;
+        }
+
+        $file1 = $this->upload->data('file_name');
+
+        // ================= UPDATE TABLE ECO =================
+        $this->Eco_model->update_inspection([
+            'img_qc'             => $file1,
+            'first_release_date' => $this->input->post('fr_date')
+        ], $id_eco);
+
+        // ================= LOGIKA HISTORY =================
+        if ($mode === 'update_only' && !empty($id_fdate)) {
+            // 🔁 UPDATE history lama (TIDAK INSERT BARU)
+            $this->db->where('id_fdate', $id_fdate);
+            $this->db->update('f_date', [
+                'file1'  => $file1,
+                'date_1' => $this->input->post('fr_date')
+            ]);
+        } else {
+            // ➕ UPLOAD NORMAL (INSERT HISTORY BARU)
+            $this->db->insert('f_date', [
+                'id_eco'       => $id_eco,
+                'file1'        => $file1,
+                'depart'       => $this->input->post('dept'),
+                'username'     => $this->input->post('regis_id'),
+                'date_1'       => $this->input->post('fr_date'),
+                'date_created' => date('Y-m-d H:i:s')
+            ]);
+        }
+
+        redirect('eco/inspection/' . $id_eco);
+    }
+
     public function update_approval()
     {
         $id_eco   = $this->input->post('id_eco');
@@ -395,30 +451,59 @@ class ECO extends CI_Controller
     {
         $id = $this->input->post('id_eco');
 
-        // ================= UPLOAD CONFIG =================
-        $config['upload_path']   = './uploads/eco_file/';
-        $config['allowed_types'] = 'html|pptx|xlsx|pdf|jpeg|jpg|png';
-        $config['max_size']      = 51200;
-
-        $this->load->library('upload', $config);
-
-        // ================= GET OLD DATA =================
+        // ================= DATA LAMA =================
         $old = $this->Eco_model->get($id)->row();
 
+        // ================= CONFIG UPLOAD =================
+        $config = [
+            'upload_path'   => './uploads/eco_file/',
+            'allowed_types' => 'pdf|jpg|jpeg|png|html|htm',
+            'max_size'      => 51200,
+            'encrypt_name'  => TRUE
+        ];
+
+        $this->load->library('upload');
+
         // ================= FILE 1 =================
-        $file1 = $old->in_eco_path;
+        $file1 = $old->in_eco_path; // default: file lama
         if (!empty($_FILES['attachment1']['name'])) {
+
+            $this->upload->initialize($config);
+
             if ($this->upload->do_upload('attachment1')) {
-                $file1 = $this->upload->data('file_name');
+
+                $newFile = $this->upload->data('file_name');
+
+                // hapus file lama HANYA jika upload sukses
+                if ($old->in_eco_path && file_exists('./uploads/eco_file/' . $old->in_eco_path)) {
+                    unlink('./uploads/eco_file/' . $old->in_eco_path);
+                }
+
+                $file1 = $newFile;
+            } else {
+                echo $this->upload->display_errors();
+                exit;
             }
         }
 
         // ================= FILE 2 =================
-        $file2 = $old->kr_eco_path;
+        $file2 = $old->kr_eco_path; // default: file lama
         if (!empty($_FILES['attachment2']['name'])) {
+
             $this->upload->initialize($config);
+
             if ($this->upload->do_upload('attachment2')) {
-                $file2 = $this->upload->data('file_name');
+
+                $newFile = $this->upload->data('file_name');
+
+                if ($old->kr_eco_path && file_exists('./uploads/eco_file/' . $old->kr_eco_path)) {
+                    unlink('./uploads/eco_file/' . $old->kr_eco_path);
+                }
+
+                $file2 = $newFile;
+            } else {
+                echo $this->upload->display_errors();
+                exit;
             }
         }
 
@@ -431,9 +516,12 @@ class ECO extends CI_Controller
             'kr_eco_path' => $file2,
             'effec_date'  => $this->input->post('efect_date'),
             'expec_date'  => $this->input->post('expec_date'),
-            'h_apply'     => $this->input->post('h-apply'),
+            'h_apply'     => $this->input->post('h_apply'),
             'dwg_pn'      => $this->input->post('dwg_pn'),
-            'ket'         => $this->input->post('ket')
+            'ket'         => $this->input->post('ket'),
+            'u_update'    => $this->input->post('user_u'),
+            'date_update' => $this->input->post('date_update')
+
         ];
 
         $this->Eco_model->update($id, $data);
@@ -477,7 +565,7 @@ class ECO extends CI_Controller
 
                 // UPDATE stock
                 $this->db->set('cr_stock', $cr_stock);
-                $this->db->set('date_update', date('Y-m-d H:i:s'));
+                $this->db->set('date_update', $post['date_update']);
                 $this->db->where('id_detail', $existing->id_detail);
                 $this->db->update('detail_eco');
             } else {
@@ -489,7 +577,7 @@ class ECO extends CI_Controller
                     'pn_number'   => $pn_number,
                     'rm'          => $rm,
                     'cr_stock'    => $cr_stock,
-                    'date_update' => date('Y-m-d H:i:s'),
+                    'date_update' => $post['date_update'],
                 ]);
             }
         }
@@ -535,12 +623,39 @@ class ECO extends CI_Controller
                 'current_stock'      => $current_stock,
                 'effective_date'     => $post['efect_date'],
                 'exhaust_date'       => $post['expec_date'],
-                'date_update'        => date('Y-m-d H:i:s'),
-                'u_update'           => $this->input->post('user_u'),
+                'date_update'        => $post['date_update'],
+                'u_update'           => $post['user_u'],
                 'shipping_available' => $shipping_available
             ]);
         }
 
         redirect('eco');
+    }
+
+    public function del_ins($id)
+    {
+        // ================= AMBIL DATA =================
+        $row = $this->Eco_model->get_first_date($id)->row();
+
+        if (!$row) {
+            show_404();
+        }
+
+        // ================= HAPUS FILE FISIK =================
+        if (!empty($row->file_path)) {
+            $path = './uploads/eco_file/' . $row->file_path;
+
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
+        $f_path = $row->file1;
+        $id_eco = $row->id_eco;
+        // ================= HAPUS DATA DATABASE =================
+        $this->Eco_model->delete_first_date($id, $id_eco);
+        $this->Eco_model->delete_f_date($f_path);
+
+        // ================= REDIRECT =================
+        redirect('eco/inspection/' . $id_eco);
     }
 }

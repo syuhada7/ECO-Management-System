@@ -44,12 +44,14 @@
                             <input type="text" name="in_eco_num" class="form-control">
                             <br>
                             <input type="file" name="attachment1" required>
+                            <span><b>*Require upload file : html,pdf,jpeg,jpg,png</b></span>
                         </div>
                         <div class="col-lg-6">
                             <label>KR ECO No.</label>
                             <input type="text" name="kr_eco_num" class="form-control">
                             <br>
                             <input type="file" name="attachment2" required>
+                            <span><b>*Require upload file : html,pdf,jpeg,jpg,png</b></span>
                         </div>
                     </div>
                     <div class="form-group">

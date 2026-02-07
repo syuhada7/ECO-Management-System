@@ -19,7 +19,7 @@
             </div>
             <div class="row">
                 <div class="col-lg">
-                    <?php echo form_open_multipart('eco/update'); ?>
+                    <?= form_open_multipart('eco/update'); ?>
                     <input type="hidden" name="id_eco" value="<?= $row->id_eco ?>">
                     <div class="form-group">
                         <div class="col-lg-4">
@@ -47,6 +47,8 @@
                             <?php if ($row->in_eco_path): ?>
                                 <small>Current File: <?= $row->in_eco_path ?></small>
                             <?php endif; ?>
+                            <br>
+                            <span><b>*Require upload file : html,pdf,jpeg,jpg,png</b></span>
                         </div>
                         <div class="col-lg-6">
                             <label>KR ECO No.</label>
@@ -56,6 +58,8 @@
                             <?php if ($row->kr_eco_path): ?>
                                 <small>Current File: <?= $row->kr_eco_path ?></small>
                             <?php endif; ?>
+                            <br>
+                            <span><b>*Require upload file : html,pdf,jpeg,jpg,png</b></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -127,7 +131,7 @@
                         </div>
                         <div class="col-lg-4">
                             <label>How to apply</label>
-                            <input type="text" name="h-apply" value="<?= $row->h_apply ?>" class="form-control">
+                            <input type="text" name="h_apply" value="<?= $row->h_apply ?>" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
@@ -187,7 +191,7 @@
                             <label>Update time</label>
                             <?php date_default_timezone_set('Asia/Jakarta'); ?>
                             <input type="text" name="date_update"
-                                value="<?= date('d F Y H:i:s'); ?>"
+                                value="<?= date('Y-m-d H:i:s'); ?>"
                                 class="form-control" readonly>
                         </div>
                         <div class="col-lg-4">

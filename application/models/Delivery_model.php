@@ -14,6 +14,15 @@ class Delivery_model extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+
+    public function get_drm($rm)
+    {
+        $this->db->from('tabel_material');
+        $this->db->where('material_no', $rm);
+        $query = $this->db->get();
+        return $query;
+    }
+
     public function get_rm($id)
     {
         $this->db->from('tabel_material');
