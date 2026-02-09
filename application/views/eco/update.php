@@ -43,6 +43,7 @@
                             <label>IN ECO No.</label>
                             <input type="text" name="in_eco_num" value="<?= $row->in_eco_num ?>" class="form-control">
                             <br>
+                            <input type="hidden" name="old_attachment1" value="<?= $row->in_eco_path ?>">
                             <input type="file" name="attachment1">
                             <?php if ($row->in_eco_path): ?>
                                 <small>Current File: <?= $row->in_eco_path ?></small>
@@ -54,6 +55,7 @@
                             <label>KR ECO No.</label>
                             <input type="text" name="kr_eco_num" value="<?= $row->kr_eco_num ?>" class="form-control">
                             <br>
+                            <input type="hidden" name="old_attachment2" value="<?= $row->kr_eco_path ?>">
                             <input type="file" name="attachment2">
                             <?php if ($row->kr_eco_path): ?>
                                 <small>Current File: <?= $row->kr_eco_path ?></small>
@@ -68,7 +70,7 @@
                             <div id="model_wrapper">
                                 <?php
                                 $model_unique = [];
-                                foreach ($detail_eco as $m) {
+                                foreach ($e_model as $m) {
                                     if (!in_array($m->model_pn, $model_unique)) {
                                         $model_unique[] = $m->model_pn;
                                 ?>
@@ -98,7 +100,7 @@
                             <div id="pn_wrapper">
                                 <?php
                                 $pn_unique = [];
-                                foreach ($detail_eco as $m) {
+                                foreach ($e_model as $m) {
                                     if (!in_array($m->pn_number, $pn_unique)) {
                                         $pn_unique[] = $m->pn_number;
                                 ?>
@@ -138,9 +140,9 @@
                         <div class="col-lg-6">
                             <label>Related Sub Materials</label>
                             <div id="rm_wrapper">
-                                <?php foreach ($detail_eco as $m): ?>
+                                <?php foreach ($material as $rm): ?>
                                     <div class="input-group mb-1">
-                                        <input type="text" name="rm[]" value="<?= $m->rm ?>" class="form-control">
+                                        <input type="text" name="rm[]" value="<?= $rm->material_no ?>" class="form-control">
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-danger remove-field">
                                                 <i class="fa fa-minus"></i>
@@ -156,9 +158,9 @@
                         <div class="col-lg-6">
                             <label>Current Stock</label>
                             <div id="stock_wrapper">
-                                <?php foreach ($detail_eco as $m): ?>
+                                <?php foreach ($material as $rm): ?>
                                     <div class="input-group mb-1">
-                                        <input type="text" name="cr_stock[]" value="<?= $m->cr_stock ?>" class="form-control">
+                                        <input type="text" name="cr_stock[]" value="<?= $rm->current_stock ?>" class="form-control">
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-danger remove-field">
                                                 <i class="fa fa-minus"></i>
@@ -231,5 +233,58 @@
             $(this).closest('.input-group').remove();
         });
 
+    });
+</script>
+<script>
+    function checkDuplicate(name) {
+        let values = [];
+        let duplicate = false;
+
+        $('input[name="' + name + '[]"]').each(function() {
+            let val = $(this).val().trim().toLowerCase();
+            if (val !== '') {
+                if (values.includes(val)) {
+                    duplicate = true;
+                    return false;
+                }
+                values.push(val);
+            }
+        });
+
+        return duplicate;
+    }
+
+    // realtime check
+    $(document).on('blur', 'input[name="model_pn[]"]', function() {
+        if (checkDuplicate('model_pn')) {
+            alert('Model tidak boleh duplicate');
+            $(this).val('').focus();
+        }
+    });
+
+    $(document).on('blur', 'input[name="pn_number[]"]', function() {
+        if (checkDuplicate('pn_number')) {
+            alert('Part Number tidak boleh duplicate');
+            $(this).val('').focus();
+        }
+    });
+
+    $(document).on('blur', 'input[name="rm[]"]', function() {
+        if (checkDuplicate('rm')) {
+            alert('Related Sub Material tidak boleh duplicate');
+            $(this).val('').focus();
+        }
+    });
+
+    // block submit
+    $('form').on('submit', function(e) {
+        if (
+            checkDuplicate('model_pn') ||
+            checkDuplicate('pn_number') ||
+            checkDuplicate('rm')
+        ) {
+            alert('Masih ada data duplicate. Mohon dicek kembali.');
+            e.preventDefault();
+        }
     });
 </script>

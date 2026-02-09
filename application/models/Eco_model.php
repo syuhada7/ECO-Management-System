@@ -33,27 +33,28 @@ class Eco_model extends CI_Model
         return $result ? $result->id_eco + 1 : 1;
     }
 
-    public function get_rm($id)
+    public function get_rm($id, $rm)
     {
-        $this->db->from('detail_eco');
+        $this->db->from('tabel_material');
         $this->db->where('id_eco', $id);
+        $this->db->where('material_no', $rm);
         $query = $this->db->get();
         return $query;
     }
 
-    public function get_drm($rm)
+    public function get_drm($id)
     {
-        $this->db->from('detail_eco');
-        $this->db->where('rm', $rm);
-        $query = $this->db->get();
-        return $query;
+        return $this->db
+            ->where('id_eco', $id)
+            ->get('tabel_material')
+            ->result();
     }
 
     public function get_detail($id)
     {
         return $this->db
             ->where('id_eco', $id)
-            ->get('detail_eco')
+            ->get('e_model')
             ->result();
     }
 
@@ -81,33 +82,6 @@ class Eco_model extends CI_Model
         // Query update
         $this->db->where('id_eco', $id);
         $this->db->update('eco', $data);
-    }
-
-    public function update_delivery()
-    {
-        $id = $this->input->post('id_eco');
-        $data = [
-            'date_update'   => date('Y-m-d H:i:s')
-        ];
-
-        // Query update
-        $this->db->where('id_eco', $id);
-        $this->db->update('detail_eco', $data);
-    }
-
-    public function update_stock()
-    {
-        $id = $this->input->post('id_eco');
-        $rm = $this->input->post('material_no');
-        $data = [
-            'cr_stock'      =>  $this->input->post('current_stock'),
-            'date_update'   => date('Y-m-d H:i:s')
-        ];
-
-        // Query update
-        $this->db->where('id_eco', $id);
-        $this->db->where('rm', $rm);
-        $this->db->update('detail_eco', $data);
     }
 
     public function update($id, $data)

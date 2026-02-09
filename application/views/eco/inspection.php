@@ -14,7 +14,6 @@
             <i class="fa fa-list"></i>
             <h3 class="box-title">ECO Inspection QC</h3>
         </div>
-
         <div class="box-body table-responsive">
             <table class="table table-bordered table-striped">
                 <?php foreach ($row->result() as $key => $data) : ?>
@@ -71,7 +70,6 @@
                                             <input type="hidden" name="dept" value="<?= $this->fungsi->user_login()->dept; ?>" class="form-control" readonly>
                                         </div>
                                     </div>
-
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-sm btn-success">
                                             <i class="fa fa-paper-plane"></i> Save

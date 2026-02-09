@@ -51,10 +51,15 @@ class Delivery_model extends CI_Model
         $id = $this->input->post('id_eco');
         $rm = $this->input->post('material_no');
         $cr_stock = (int) $this->input->post('current_stock'); // pastikan integer
+        $regis = $this->input->post('regis_id');
+        $d_update = date('Y-m-d');
 
         // Siapkan data dasar untuk update
         $data = [
-            'current_stock' => $cr_stock
+            'current_stock' => $cr_stock,
+            'u_update'      => $regis,
+            'date_update'   => $d_update
+
         ];
 
         // Logika otomatis status shipping

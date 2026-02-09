@@ -60,7 +60,7 @@
                                         : ($data->kr_eco_num ?: "—")
                                     ?>
                                 </td>
-                                <td><?= $m->rm ?></td>
+                                <td><?= $m->material_no ?></td>
                                 <td><?= $data->register ?></td>
                                 <td style="background-color:
                 <?php
@@ -71,7 +71,7 @@
                                 </td>
                                 <td><?= $data->h_apply ?></td>
                                 <td><?= $data->status2 ?></td>
-                                <td><?= $m->date_update ?></td>
+                                <td><?= $m->date_regis ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endforeach; ?>
@@ -93,16 +93,16 @@
                 </thead>
                 <tbody>
                     <?php
-                    foreach ($row3->result() as $key => $d) :
+                    foreach ($row2->result() as $key => $m) :
                     ?>
                         <tr>
-                            <td class="highlight" data-id="<?= $d->id_eco ?>" data-pn="<?= $d->material_no ?>"><?= $d->material_no ?></td>
-                            <td class="current-stock"><?= $d->current_stock ?></td>
-                            <td><?= $d->effective_date ?></td>
-                            <td><?= $d->exhaust_date ?></td>
-                            <td><?= $d->shipping_available ?></td>
-                            <td><?= $d->issue ?></td>
-                            <td><a href="<?= site_url('eco/delivery/' . $d->material_no) ?>" class="btn btn-default" id="btnCreate"><i class="fa fa-plus"> Created</i></a></td>
+                            <td class="highlight" data-id="<?= $m->id_eco ?>" data-pn="<?= $m->material_no ?>"><?= $m->material_no ?></td>
+                            <td class="current-stock"><?= $m->current_stock ?></td>
+                            <td><?= $m->effective_date ?></td>
+                            <td><?= $m->exhaust_date ?></td>
+                            <td><?= $m->shipping_available ?></td>
+                            <td><?= $m->issue ?></td>
+                            <td><a href="<?= site_url('eco/delivery/' . $m->material_no) ?>" class="btn btn-default" id="btnCreate"><i class="fa fa-plus"> Created</i></a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -127,67 +127,66 @@
                 </thead>
                 <tbody></tbody>
             </table>
-
-            <script>
-                $(document).ready(function() {
-                    $(".highlight").on("click", function() {
-                        var id = $(this).data("id");
-                        var pn = $(this).data("pn");
-
-                        // Reset highlight
-                        $(".highlight").removeClass("active");
-                        $(this).addClass("active");
-
-                        $.ajax({
-                            url: "<?= site_url('eco/get_delivery/') ?>" + id + "/" + pn,
-                            type: "GET",
-                            dataType: "json",
-                            success: function(data) {
-                                var rows = "";
-                                if (data.error) {
-                                    rows = "<tr><td colspan='7' style='color:red'>" + data.error + "</td></tr>";
-                                } else if (data.length > 0) {
-                                    $.each(data, function(i, item) {
-                                        rows += "<tr>" +
-                                            "<td>" + (i + 1) + "</td>" +
-                                            "<td>" + item.delivery_schedule + "</td>" +
-                                            "<td>" + item.previous_inventory + "</td>" +
-                                            "<td>" + item.quantity_shipped + "</td>" +
-                                            "<td>" + item.current_stock + "</td>" +
-                                            "<td>" + item.shipped_wio + "</td>" +
-                                            "<td>" + (item.note || '') + "</td>" +
-                                            "</tr>";
-                                    });
-                                } else {
-                                    rows = "<tr><td colspan='7'>No delivery data found for " + pn + "</td></tr>";
-                                }
-
-                                $("#deliveryTable tbody").html(rows);
-                                $("#deliveryTable").removeClass("hidden");
-                            }
-                        });
-                    });
-                });
-            </script>
-
-            <!-- Script untuk hide button jika Current Stock = 0 -->
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    let stocks = document.querySelectorAll('.current-stock');
-                    let hideButton = false;
-
-                    stocks.forEach(td => {
-                        let value = parseInt(td.textContent.trim());
-                        if (value === 0) {
-                            hideButton = true;
-                        }
-                    });
-
-                    if (hideButton) {
-                        document.getElementById('btnCreate').style.display = 'none';
-                    }
-                });
-            </script>
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function() {
+        $(".highlight").on("click", function() {
+            var id = $(this).data("id");
+            var pn = $(this).data("pn");
+
+            // Reset highlight
+            $(".highlight").removeClass("active");
+            $(this).addClass("active");
+
+            $.ajax({
+                url: "<?= site_url('eco/get_delivery/') ?>" + id + "/" + pn,
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+                    var rows = "";
+                    if (data.error) {
+                        rows = "<tr><td colspan='7' style='color:red'>" + data.error + "</td></tr>";
+                    } else if (data.length > 0) {
+                        $.each(data, function(i, item) {
+                            rows += "<tr>" +
+                                "<td>" + (i + 1) + "</td>" +
+                                "<td>" + item.delivery_schedule + "</td>" +
+                                "<td>" + item.previous_inventory + "</td>" +
+                                "<td>" + item.quantity_shipped + "</td>" +
+                                "<td>" + item.current_stock + "</td>" +
+                                "<td>" + item.shipped_wio + "</td>" +
+                                "<td>" + (item.note || '') + "</td>" +
+                                "</tr>";
+                        });
+                    } else {
+                        rows = "<tr><td colspan='7'>No delivery data found for " + pn + "</td></tr>";
+                    }
+
+                    $("#deliveryTable tbody").html(rows);
+                    $("#deliveryTable").removeClass("hidden");
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Script untuk hide button jika Current Stock = 0 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let stocks = document.querySelectorAll('.current-stock');
+        let hideButton = false;
+
+        stocks.forEach(td => {
+            let value = parseInt(td.textContent.trim());
+            if (value === 0) {
+                hideButton = true;
+            }
+        });
+
+        if (hideButton) {
+            document.getElementById('btnCreate').style.display = 'none';
+        }
+    });
+</script>

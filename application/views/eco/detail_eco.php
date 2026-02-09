@@ -1,10 +1,9 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>Model</th>
-            <th>Part Number</th>
-            <th>Sub Material</th>
-            <th>Current Stock</th>
+            <th class="text-center">Sub Material</th>
+            <th class="text-center">Current Stock</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -13,21 +12,19 @@
         $rowspan = count($eco_rows);
         foreach ($eco_rows as $i => $row):
         ?>
-            <tr style="background-color: <?= ($row->cr_stock === '' ? '#f8d7da' : '') ?>" class="text-center">
-
+            <tr style="background-color: <?= ($row->current_stock === '' ? '#f8d7da' : '') ?>" class="text-center">
                 <td>
-                    <?= $row->model_pn ?>
-                </td>
-                <td><?= $row->pn_number ?></td>
-                <td>
-                    <a href="<?= site_url('eco/v_list/' . $row->id_eco) ?>">
-                        <?= $row->rm ?>
-                    </a>
+                    <?= $row->material_no ?>
                 </td>
                 <td>
-                    <span class="label label-<?= $row->cr_stock > 0 ? 'success' : 'danger' ?>">
-                        <?= $row->cr_stock ?>
+                    <span class="label label-<?= $row->current_stock > 0 ? 'success' : 'danger' ?>">
+                        <?= $row->current_stock ?>
                     </span>
+                </td>
+                <td>
+                    <a href="<?= site_url('eco/v_list/' . $row->id_eco . '/' . $row->material_no) ?>">
+                        <i class="fa fa-eye"></i>
+                    </a>
                 </td>
             </tr>
         <?php endforeach; ?>

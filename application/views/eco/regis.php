@@ -97,7 +97,7 @@
                         </div>
                         <div class="col-lg-3">
                             <label>How to apply</label>
-                            <input type="text" name="h-apply" class="form-control">
+                            <input type="text" name="h_apply" class="form-control">
                         </div>
                         <div class="col-lg-3">
                             <label>Drawing P/N</label>
@@ -187,5 +187,76 @@
             $(this).closest('.input-group').remove();
         });
 
+    });
+</script>
+<script>
+    function checkDuplicate(inputName, currentInput) {
+        let values = [];
+        let isDuplicate = false;
+        let currentVal = $(currentInput).val().trim().toLowerCase();
+
+        if (currentVal === '') return false;
+
+        $('input[name="' + inputName + '[]"]').each(function() {
+            let val = $(this).val().trim().toLowerCase();
+            if (val !== '') {
+                if (values.includes(val)) {
+                    isDuplicate = true;
+                    return false;
+                }
+                values.push(val);
+            }
+        });
+
+        return isDuplicate;
+    }
+
+    // MODEL
+    $(document).on('blur', 'input[name="model_pn[]"]', function() {
+        if (checkDuplicate('model_pn', this)) {
+            alert('Model tidak boleh duplicate!');
+            $(this).val('').focus();
+        }
+    });
+
+    // PART NUMBER
+    $(document).on('blur', 'input[name="pn_number[]"]', function() {
+        if (checkDuplicate('pn_number', this)) {
+            alert('Part Number tidak boleh duplicate!');
+            $(this).val('').focus();
+        }
+    });
+
+    // RELATED SUB MATERIAL
+    $(document).on('blur', 'input[name="rm[]"]', function() {
+        if (checkDuplicate('rm', this)) {
+            alert('Related Sub Material tidak boleh duplicate!');
+            $(this).val('').focus();
+        }
+    });
+
+    // Cegah submit kalau masih ada duplicate
+    $('form').on('submit', function(e) {
+        let fields = ['model_pn', 'pn_number', 'rm'];
+        let hasDuplicate = false;
+
+        fields.forEach(function(field) {
+            let vals = [];
+            $('input[name="' + field + '[]"]').each(function() {
+                let v = $(this).val().trim().toLowerCase();
+                if (v !== '') {
+                    if (vals.includes(v)) {
+                        hasDuplicate = true;
+                        return false;
+                    }
+                    vals.push(v);
+                }
+            });
+        });
+
+        if (hasDuplicate) {
+            alert('Masih ada data duplicate. Mohon periksa kembali!');
+            e.preventDefault();
+        }
     });
 </script>

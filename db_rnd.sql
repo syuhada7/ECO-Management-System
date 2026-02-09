@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 23, 2026 at 03:43 AM
+-- Generation Time: Feb 09, 2026 at 02:56 PM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -46,23 +46,6 @@ CREATE TABLE `delivery_schedule` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `detail_eco`
---
-
-CREATE TABLE `detail_eco` (
-  `id_detail` int(11) NOT NULL,
-  `id_eco` int(11) NOT NULL,
-  `model_pn` varchar(225) NOT NULL,
-  `pn_number` varchar(225) NOT NULL,
-  `rm` varchar(225) NOT NULL,
-  `cr_stock` int(11) NOT NULL,
-  `date_regis` datetime NOT NULL,
-  `date_update` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `eco`
 --
 
@@ -84,7 +67,6 @@ CREATE TABLE `eco` (
   `first_release_date` date NOT NULL,
   `img_qc` varchar(150) NOT NULL,
   `dwg_pn` varchar(100) NOT NULL,
-  `last_stock_date` date NOT NULL,
   `ket` varchar(150) NOT NULL,
   `img_meeting` varchar(50) NOT NULL,
   `aproval1` varchar(10) NOT NULL,
@@ -95,7 +77,24 @@ CREATE TABLE `eco` (
   `aproval6` varchar(10) NOT NULL,
   `aproval7` varchar(10) NOT NULL,
   `u_update` varchar(150) NOT NULL,
-  `date_update` datetime NOT NULL
+  `date_update` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `e_model`
+--
+
+CREATE TABLE `e_model` (
+  `id_emodel` int(11) NOT NULL,
+  `id_eco` int(11) NOT NULL,
+  `model_pn` varchar(150) NOT NULL,
+  `pn_number` varchar(150) NOT NULL,
+  `u_regis` varchar(225) NOT NULL,
+  `date_regis` date NOT NULL,
+  `u_update` varchar(225) NOT NULL,
+  `date_update` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -143,8 +142,10 @@ CREATE TABLE `tabel_material` (
   `exhaust_date` date DEFAULT NULL,
   `shipping_available` varchar(20) DEFAULT NULL,
   `issue` varchar(255) DEFAULT NULL,
+  `u_regis` varchar(225) NOT NULL,
+  `date_regis` date NOT NULL,
   `u_update` varchar(150) NOT NULL,
-  `date_update` datetime NOT NULL
+  `date_update` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -191,16 +192,16 @@ ALTER TABLE `delivery_schedule`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `detail_eco`
---
-ALTER TABLE `detail_eco`
-  ADD PRIMARY KEY (`id_detail`);
-
---
 -- Indexes for table `eco`
 --
 ALTER TABLE `eco`
   ADD PRIMARY KEY (`id_eco`);
+
+--
+-- Indexes for table `e_model`
+--
+ALTER TABLE `e_model`
+  ADD PRIMARY KEY (`id_emodel`);
 
 --
 -- Indexes for table `f_date`
@@ -237,16 +238,16 @@ ALTER TABLE `delivery_schedule`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `detail_eco`
---
-ALTER TABLE `detail_eco`
-  MODIFY `id_detail` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `eco`
 --
 ALTER TABLE `eco`
   MODIFY `id_eco` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `e_model`
+--
+ALTER TABLE `e_model`
+  MODIFY `id_emodel` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `f_date`

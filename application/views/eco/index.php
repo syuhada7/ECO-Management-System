@@ -34,8 +34,9 @@
                     <th>Final Status</th>
                     <th>First Release Date</th>
                     <th>Drawing P/N</th>
-                    <th>Details ECO</th>
+                    <th>Details Materials</th>
                     <th>Views Approval</th>
+                    <!-- <th>Details</th> -->
                 </thead>
                 <tbody>
                     <?php
@@ -86,13 +87,13 @@
                             <?php
                             $isInvalidDate = empty($data->first_release_date) || $data->first_release_date === '0000-00-00';
                             ?>
-                            <td style="background-color: <?= $isInvalidDate ? 'red' : '' ?>">
+                            <td style="background-color: <?= $isInvalidDate ? 'red' : '' ?>" class="text-center">
                                 <a href="<?= site_url('eco/inspection/' . $data->id_eco) ?>">
-                                    <?= $isInvalidDate ? '-' : $data->first_release_date ?>
+                                    <?= $isInvalidDate ? '<i class="fa fa-eye"></i>' : $data->first_release_date ?>
                                 </a>
                             </td>
                             <td><?= $data->dwg_pn ?></td>
-                            <td>
+                            <td class="text-center">
                                 <input type="checkbox"
                                     class="eco-detail-checkbox"
                                     value="<?= $data->id_eco ?>">
@@ -114,11 +115,16 @@
                             // Buat URL link
                             $link = site_url('eco/approval/' . $data->id_eco);
                             ?>
-                            <td style="background-color: <?= $incomplete ? 'red' : '' ?>">
+                            <td style="background-color: <?= $incomplete ? 'red' : '' ?>" class="text-center">
                                 <a href="<?= $link ?>">
                                     <i class="fa fa-eye"></i>
                                 </a>
                             </td>
+                            <!-- <td class="text-center">
+                                <a href="<?= site_url('eco/details/' . $data->id_eco) ?>">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            </td> -->
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
