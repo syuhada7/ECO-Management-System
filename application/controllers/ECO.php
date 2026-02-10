@@ -37,7 +37,8 @@ class ECO extends CI_Controller
         $data['next_id'] = $this->Eco_model->get_next_id();
         $this->template->load('templates/template', 'eco/regis', $data);
     }
-    public function delivery($rm = null)
+
+    public function delivery($rm)
     {
         if (!$rm) {
             echo json_encode(['error' => 'Parameter tidak lengkap']);
@@ -45,12 +46,12 @@ class ECO extends CI_Controller
         }
 
         // Validasi material_id dan material_no cocok
-        $material = $this->Eco_model->get_rm($rm);
+        $material = $this->Delivery_model->get_drm($rm);
         if (!$material) {
             echo json_encode(['error' => 'Material tidak ditemukan']);
             return;
         }
-        $data['row'] = $this->Delivery_model->get_rm($rm);
+        $data['row'] = $this->Delivery_model->get_drm($rm);
         $this->template->load('templates/template', 'eco/delivery', $data);
     }
 
