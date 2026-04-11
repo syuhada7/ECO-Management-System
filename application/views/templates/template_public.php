@@ -104,7 +104,7 @@
     <!-- ================================================== -->
 
     <footer class="main-footer">
-      <strong>Copyright &copy; 2025</strong> Had's Project : PT. Habdong Indonesia - Bekasi
+      <strong>Copyright &copy; 2026</strong> Had's Project : PT. Habdong Indonesia - Bekasi
     </footer>
   </div>
   <!-- ./wrapper -->

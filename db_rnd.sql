@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 09, 2026 at 02:56 PM
+-- Generation Time: Apr 11, 2026 at 06:17 AM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -21,6 +21,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_rnd`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bom`
+--
+
+CREATE TABLE `bom` (
+  `id_bom` int(11) NOT NULL,
+  `no_pn` varchar(100) NOT NULL,
+  `file_bom` varchar(225) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `u_created` varchar(100) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `approv1` varchar(50) NOT NULL,
+  `approv2` varchar(50) NOT NULL,
+  `approv3` varchar(50) NOT NULL,
+  `approv4` varchar(50) NOT NULL,
+  `approv5` varchar(50) NOT NULL,
+  `approv6` varchar(50) NOT NULL,
+  `approv7` varchar(50) NOT NULL,
+  `remarks` varchar(225) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -122,9 +145,11 @@ CREATE TABLE `f_date` (
 CREATE TABLE `komentar` (
   `id_komen` int(11) NOT NULL,
   `id_eco` int(11) NOT NULL,
+  `id_bom` int(11) NOT NULL,
   `nama_user` varchar(100) NOT NULL,
   `date_komen` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `komen` varchar(255) NOT NULL
+  `komen` varchar(255) NOT NULL,
+  `tipe` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -186,6 +211,12 @@ INSERT INTO `user` (`id_user`, `nik`, `nama`, `password`, `level`, `image`, `dep
 --
 
 --
+-- Indexes for table `bom`
+--
+ALTER TABLE `bom`
+  ADD PRIMARY KEY (`id_bom`);
+
+--
 -- Indexes for table `delivery_schedule`
 --
 ALTER TABLE `delivery_schedule`
@@ -230,6 +261,12 @@ ALTER TABLE `user`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `bom`
+--
+ALTER TABLE `bom`
+  MODIFY `id_bom` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `delivery_schedule`

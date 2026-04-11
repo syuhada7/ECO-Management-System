@@ -102,6 +102,11 @@
                 <i class="fa fa-users"></i> <span> User Data</span></a>
             </li>
             <li class="header">ECO Management</li>
+            <li <?= $this->uri->segment(1) == 'BOM' ? 'class="active"' : '' ?>>
+              <a href="<?= base_url('BOM') ?>">
+                <i class="fa fa-filter"></i> <span>BOM Data</span>
+              </a>
+            </li>
             <li <?= $this->uri->segment(1) == 'ECO' ? 'class="active"' : '' ?>>
               <a href="<?= base_url('ECO') ?>">
                 <i class="fa fa-cubes"></i> <span>ECO Data</span>

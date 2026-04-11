@@ -117,7 +117,6 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-
                                 <div class="modal-body">
                                     <?php echo form_open_multipart('eco/upload_meeting'); ?>
                                     <div class="form-group row">
@@ -127,7 +126,6 @@
                                             <input type="hidden" name="id_eco" value="<?= $data->id_eco ?>">
                                         </div>
                                     </div>
-
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-sm btn-success">
                                             <i class="fa fa-paper-plane"></i> Save
@@ -141,10 +139,8 @@
                             </div>
                         </div>
                     </div>
-
                 <?php endforeach; ?>
             </table>
-
             <br>
             <div class="pull-right">
                 <div class="btn-group">

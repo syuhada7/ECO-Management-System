@@ -424,7 +424,8 @@ class ECO extends CI_Controller
         $data = [
             'id_eco'        => $this->input->post('id_eco'),
             'nama_user'     => $this->input->post('nama_user'),
-            'komen'         => $this->input->post('komentar')
+            'komen'         => $this->input->post('komentar'),
+            'tipe'          => 'ECO'
         ];
         $this->Eco_model->insert_komen($data);
         redirect('eco/approval/' . $id);
