@@ -115,4 +115,10 @@ class Eco_model extends CI_Model
         $this->db->where('img_qc', $f_path);
         $this->db->update('eco', $data);
     }
+
+    public function delete($where)
+    {
+        $this->db->where($where);
+        $this->db->delete('eco');
+    }
 }

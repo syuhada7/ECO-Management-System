@@ -601,4 +601,14 @@ class ECO extends CI_Controller
         // ================= REDIRECT =================
         redirect('eco/inspection/' . $id_eco);
     }
+
+    public function delete($id_eco)
+    {
+        $where = array('id_eco' => $id_eco);
+        $this->Eco_model->delete($where, 'id_eco');
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('success', 'Data Success Delete');
+        }
+        redirect('ECO');
+    }
 }

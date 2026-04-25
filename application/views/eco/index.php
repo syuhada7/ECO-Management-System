@@ -36,7 +36,7 @@
                     <th>Drawing P/N</th>
                     <th>Details Materials</th>
                     <th>Views Approval</th>
-                    <!-- <th>Details</th> -->
+                    <th>Actons</th>
                 </thead>
                 <tbody>
                     <?php
@@ -118,6 +118,11 @@
                             <td style="background-color: <?= $incomplete ? 'red' : '' ?>" class="text-center">
                                 <a href="<?= $link ?>">
                                     <i class="fa fa-eye"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<?= site_url('eco/delete/' . $data->id_eco) ?>" class="btn btn-small btn-danger">
+                                    <i class="fa fa-trash"></i>
                                 </a>
                             </td>
                             <!-- <td class="text-center">
